@@ -12,8 +12,7 @@ public class POI {
 
     private boolean validato;
 
-    //TODO: cambiare in tipo Comune
-    private String comune;
+    private Comune comune;
 
     private boolean isPhysical;
 
@@ -23,12 +22,11 @@ public class POI {
     // Per i POI logici
     private String informazioniStoriche;
 
-    //TODO: cambiare in tipo Contenuto
-    private List<?> contenuti;
+    private List<Contenuto> contenuti;
 
     private List<Recensione> recensioni;
 
-    public POI(int id, String nome, String descrizione, boolean validato, String comune, double longitudine, double latitudine, boolean isPhysical, String orariDiApertura, String informazioniStoriche, List<?> contenuti, List<Recensione> recensioni) {
+    public POI(int id, String nome, String descrizione, boolean validato, Comune comune, double longitudine, double latitudine, boolean isPhysical, String orariDiApertura, String informazioniStoriche, List<Contenuto> contenuti, List<Recensione> recensioni) {
         this.id = id;
         this.nome = nome;
         this.descrizione = descrizione;
@@ -75,11 +73,11 @@ public class POI {
         this.validato = validato;
     }
 
-    public String getComune() {
+    public Comune getComune() {
         return comune;
     }
 
-    public void setComune(String comune) {
+    public void setComune(Comune comune) {
         this.comune = comune;
     }
 
@@ -127,7 +125,7 @@ public class POI {
         return contenuti;
     }
 
-    public void setContenuti(List<?> contenuti) {
+    public void setContenuti(List<Contenuto> contenuti) {
         this.contenuti = contenuti;
     }
 

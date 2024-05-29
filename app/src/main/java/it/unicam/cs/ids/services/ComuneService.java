@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.services;
 
 import it.unicam.cs.ids.model.Comune;
+import it.unicam.cs.ids.model.POI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.Optional;
 
 public class ComuneService {
     private final List<Comune> comuneList = new ArrayList<>();
-    private final List<Comune> poiList = new ArrayList<>();
+    private final List<POI> poiList = new ArrayList<>();
 
     public Comune create(Comune comune) {
         comuneList.add(comune);
@@ -32,11 +33,11 @@ public class ComuneService {
         comuneList.removeIf(p -> p.getId() == id);
     }
 
-    public List<Comune> getAllByComuneID(int id) {
+    public List<Comune> getAllComuni() {
         return comuneList;
     }
 
-    public List<Comune> getAllPOIByComuneID(int id) {
+    public List<POI> getAllPOIByComuneID(int id) {
         return poiList;
     }
 }

@@ -1,5 +1,7 @@
 package it.unicam.cs.ids.model;
 
+import it.unicam.cs.ids.enumClasses.TipoRuolo;
+
 import java.util.List;
 
 public class User {
@@ -12,8 +14,6 @@ public class User {
     private Boolean autorizzato;
     private TipoRuolo ruolo;
     private List<POI> preferiti;
-
-    // Costruttore, getters e setters
 
     public User(Integer id, String nome, String cognome, String username, String password, String email, Boolean autorizzato, TipoRuolo ruolo, List<POI> preferiti) {
         this.id = id;
@@ -82,7 +82,6 @@ public class User {
         this.email = email;
     }
 
-
     public TipoRuolo getRuolo() {
         return ruolo;
     }
@@ -97,7 +96,5 @@ public class User {
 
     public void setAutorizzato(boolean autorizzato) {
         this.autorizzato = autorizzato;
-}
-
-
+    }
 }

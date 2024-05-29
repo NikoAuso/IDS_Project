@@ -10,10 +10,9 @@ public class Itinerario {
 
     private List<POI> percorso;
 
-    //TODO: Cambiare in tipo User
-    private String autore;
+    private User autore;
 
-    public Itinerario(int id, String nome, String descrizione, String distanza, List<POI> percorso, String autore) {
+    public Itinerario(int id, String nome, String descrizione, String distanza, List<POI> percorso, User autore) {
         this.id = id;
         this.nome = nome;
         this.descrizione = descrizione;
@@ -71,11 +70,11 @@ public class Itinerario {
     }
 
 
-    public String getAutore() {
+    public User getAutore() {
         return autore;
     }
 
-    public void setAutore(String autore) {
+    public void setAutore(User autore) {
         this.autore = autore;
     }
 }

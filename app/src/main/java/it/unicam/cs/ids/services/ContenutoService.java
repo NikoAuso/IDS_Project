@@ -23,7 +23,7 @@ public class ContenutoService {
         if (id >= 0 && id < contenutoList.size() && contenutoList.get(id).getId() == id) {
             contenutoList.set(id, contenuto);
         } else {
-            throw new IllegalArgumentException("Contest non trovato!");
+            throw new IllegalArgumentException("Contenuto non trovato!");
         }
     }
 
@@ -31,4 +31,7 @@ public class ContenutoService {
         contenutoList.removeIf(i -> i.getId() == id);
     }
 
+    public List<Contenuto> getAllContenutiByPOI(int idPOI) {
+        return contenutoList;
+    }
 }

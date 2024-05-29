@@ -2,8 +2,8 @@ package it.unicam.cs.ids.model;
 
 public class Recensione {
     private int id;
-    //TODO: Cambiare tipo in User
-    private String autore;
+
+    private User autore;
 
     private String commento;
 
@@ -11,7 +11,7 @@ public class Recensione {
 
     private String created_at;
 
-    public Recensione(int id, String autore, String commento, int voto, String created_at) {
+    public Recensione(int id, User autore, String commento, int voto, String created_at) {
         this.id = id;
         this.autore = autore;
         this.commento = commento;
@@ -27,11 +27,11 @@ public class Recensione {
         this.id = id;
     }
 
-    public String getAutore() {
+    public User getAutore() {
         return autore;
     }
 
-    public void setAutore(String autore) {
+    public void setAutore(User autore) {
         this.autore = autore;
     }
 

@@ -23,7 +23,7 @@ public class UserService {
         if (id >= 0 && id < userList.size() && userList.get(id).getId() == id) {
             userList.set(id, user);
         } else {
-            throw new IllegalArgumentException("Contest non trovato!");
+            throw new IllegalArgumentException("Utente non trovato!");
         }
     }
 

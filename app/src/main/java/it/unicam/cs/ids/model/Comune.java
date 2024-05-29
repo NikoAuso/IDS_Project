@@ -8,9 +8,6 @@ public class Comune {
     private String provincia;
     private User curatore;
 
-    // Costruttore, getters e setters
-
-
     public Comune(Integer id, String nome, String cap, String regione, String provincia, User curatore) {
         this.id = id;
         this.nome = nome;
