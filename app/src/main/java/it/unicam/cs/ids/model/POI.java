@@ -1,8 +1,10 @@
 package it.unicam.cs.ids.model;
 
+import it.unicam.cs.ids.enumClasses.TipoPOI;
+
 import java.util.List;
 
-public class POI {
+public abstract class POI {
     private int id;
     private String nome;
     private String descrizione;
@@ -14,31 +16,17 @@ public class POI {
 
     private Comune comune;
 
-    private boolean isPhysical;
-
-    // Per i POI fisici
-    private String orariDiApertura;
-
-    // Per i POI logici
-    private String informazioniStoriche;
-
     private List<Contenuto> contenuti;
 
     private List<Recensione> recensioni;
 
-    public POI(int id, String nome, String descrizione, boolean validato, Comune comune, double longitudine, double latitudine, boolean isPhysical, String orariDiApertura, String informazioniStoriche, List<Contenuto> contenuti, List<Recensione> recensioni) {
-        this.id = id;
+    public POI(String nome, String descrizione, boolean validato, Comune comune, double longitudine, double latitudine) {
         this.nome = nome;
         this.descrizione = descrizione;
         this.validato = validato;
         this.comune = comune;
         this.longitudine = longitudine;
         this.latitudine = latitudine;
-        this.isPhysical = isPhysical;
-        this.orariDiApertura = orariDiApertura;
-        this.informazioniStoriche = informazioniStoriche;
-        this.contenuti = contenuti;
-        this.recensioni = recensioni;
     }
 
     public int getId() {
@@ -97,43 +85,5 @@ public class POI {
         this.latitudine = latitudine;
     }
 
-    public boolean isPhysical() {
-        return isPhysical;
-    }
-
-    public void setPhysical(boolean physical) {
-        isPhysical = physical;
-    }
-
-    public String getOrariDiApertura() {
-        return orariDiApertura;
-    }
-
-    public void setOrariDiApertura(String orariDiApertura) {
-        this.orariDiApertura = orariDiApertura;
-    }
-
-    public String getInformazioniStoriche() {
-        return informazioniStoriche;
-    }
-
-    public void setInformazioniStoriche(String informazioniStoriche) {
-        this.informazioniStoriche = informazioniStoriche;
-    }
-
-    public List<?> getContenuti() {
-        return contenuti;
-    }
-
-    public void setContenuti(List<Contenuto> contenuti) {
-        this.contenuti = contenuti;
-    }
-
-    public List<Recensione> getRecensioni() {
-        return recensioni;
-    }
-
-    public void setRecensioni(List<Recensione> recensioni) {
-        this.recensioni = recensioni;
-    }
+    public abstract TipoPOI getType();
 }
