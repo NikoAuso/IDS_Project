@@ -1,0 +1,16 @@
+package it.unicam.cs.ids.enumeration;
+
+public enum TipoCategorieFisico {
+    MUSEO,
+    PARCO,
+    RISTORANTE,
+    INTRATTENIMENTO,
+    CENTRO_SPORTIVO,
+    CENTRO_COMMERCIALE,
+    ISTITUTO_DI_ISTRUZIONE,
+    SALUTE_BENESSERE,
+    SERVIZIO_PUBBLICO,
+    STAZIONE,
+    RELIGIONE,
+    STRUTTURA_RICETTIVA,
+}
