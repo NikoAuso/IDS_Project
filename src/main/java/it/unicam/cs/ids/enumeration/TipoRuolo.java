@@ -1,9 +1,9 @@
 package it.unicam.cs.ids.enumeration;
 
 public enum TipoRuolo {
-    CONTRIBUTOR,
     TURISTA,
+    CONTRIBUTOR,
     CURATORE,
     ANIMATORE,
-    ADMIN
+    ADMIN;
 }

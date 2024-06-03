@@ -1,5 +1,7 @@
 package it.unicam.cs.ids.model;
 
+import it.unicam.cs.ids.model.POI.POI;
+
 import java.util.List;
 
 public class Itinerario {
@@ -10,9 +12,9 @@ public class Itinerario {
 
     private List<POI> percorso;
 
-    private User autore;
+    private Users autore;
 
-    public Itinerario(int id, String nome, String descrizione, String distanza, List<POI> percorso, User autore) {
+    public Itinerario(int id, String nome, String descrizione, String distanza, List<POI> percorso, Users autore) {
         this.id = id;
         this.nome = nome;
         this.descrizione = descrizione;
@@ -70,11 +72,11 @@ public class Itinerario {
     }
 
 
-    public User getAutore() {
+    public Users getAutore() {
         return autore;
     }
 
-    public void setAutore(User autore) {
+    public void setAutore(Users autore) {
         this.autore = autore;
     }
 }

@@ -20,13 +20,13 @@ public class Contenuto {
 
     private List<File> files;
 
-    private User created_by;
+    private Users created_by;
     private LocalDateTime created_at;
     private String updated_by;
     private LocalDateTime updated_at;
 
     public Contenuto(Integer id, Integer idPOI, String nome, String descrizione, TipoContenuto tipo, LocalDateTime dataInizio,
-                     LocalDateTime dataFine, boolean validato, List<File> files, User created_by,
+                     LocalDateTime dataFine, boolean validato, List<File> files, Users created_by,
                      LocalDateTime created_at,String updated_by, LocalDateTime updated_at ){
         this.id = id;
         this.idPOI = idPOI;
@@ -115,11 +115,11 @@ public class Contenuto {
         this.dataFine = dataFine;
     }
 
-    public User getCreated_by() {
+    public Users getCreated_by() {
         return created_by;
     }
 
-    public void setCreated_by(User created_by) {
+    public void setCreated_by(Users created_by) {
         this.created_by = created_by;
     }
 

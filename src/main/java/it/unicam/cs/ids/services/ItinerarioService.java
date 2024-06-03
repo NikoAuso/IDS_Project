@@ -1,7 +1,7 @@
 package it.unicam.cs.ids.services;
 
 import it.unicam.cs.ids.model.Itinerario;
-import it.unicam.cs.ids.model.POI;
+import it.unicam.cs.ids.model.POI.POI;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -10,14 +10,14 @@ public class Contest {
     private Boolean tipo;
     private String tema;
     private List<Contenuto> contenuti;
-    private List<User> utenti;
+    private List<Users> utenti;
     private LocalDateTime dataInizio;
     private LocalDateTime dataFine;
-    private User curatore;
+    private Users curatore;
 
     // Costruttori, getters e setters
 
-    public Contest(Integer id, String nome, String descrizione, Boolean tipo, String tema, List<Contenuto> contenuti, List<User> utenti, LocalDateTime dataInizio, LocalDateTime dataFine, User curatore) {
+    public Contest(Integer id, String nome, String descrizione, Boolean tipo, String tema, List<Contenuto> contenuti, List<Users> utenti, LocalDateTime dataInizio, LocalDateTime dataFine, Users curatore) {
         this.id = id;
         this.nome = nome;
         this.descrizione = descrizione;
@@ -57,11 +57,11 @@ public class Contest {
         this.dataFine = dataFine;
     }
 
-    public User getCuratore() {
+    public Users getCuratore() {
         return curatore;
     }
 
-    public void setCuratore(User curatore) {
+    public void setCuratore(Users curatore) {
         this.curatore = curatore;
     }
 
@@ -97,11 +97,11 @@ public class Contest {
         this.contenuti = contenuti;
     }
 
-    public List<User> getUtenti() {
+    public List<Users> getUtenti() {
         return utenti;
     }
 
-    public void setUtenti(List<User> utenti) {
+    public void setUtenti(List<Users> utenti) {
         this.utenti = utenti;
     }
 

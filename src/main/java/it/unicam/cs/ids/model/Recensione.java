@@ -3,7 +3,7 @@ package it.unicam.cs.ids.model;
 public class Recensione {
     private int id;
 
-    private User autore;
+    private Users autore;
 
     private String commento;
 
@@ -11,7 +11,7 @@ public class Recensione {
 
     private String created_at;
 
-    public Recensione(int id, User autore, String commento, int voto, String created_at) {
+    public Recensione(int id, Users autore, String commento, int voto, String created_at) {
         this.id = id;
         this.autore = autore;
         this.commento = commento;
@@ -27,11 +27,11 @@ public class Recensione {
         this.id = id;
     }
 
-    public User getAutore() {
+    public Users getAutore() {
         return autore;
     }
 
-    public void setAutore(User autore) {
+    public void setAutore(Users autore) {
         this.autore = autore;
     }
 

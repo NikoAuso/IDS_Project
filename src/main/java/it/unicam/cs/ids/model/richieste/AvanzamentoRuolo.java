@@ -1,16 +1,18 @@
-package it.unicam.cs.ids.model;
+package it.unicam.cs.ids.model.richieste;
+
+import it.unicam.cs.ids.model.Users;
 
 import java.util.ArrayList;
 
 public class AvanzamentoRuolo implements Richieste{
     private int id;
-    private User utente;
+    private Users richiedente;
     private String commento;
 
     private String statoRichiesta;
 
     public AvanzamentoRuolo(ArrayList<?> dati) {
-        this.utente = (User) dati.get(0);
+        this.richiedente = (Users) dati.get(0);
         this.commento = dati.get(1).toString();
         this.statoRichiesta = dati.get(2).toString();
     }
@@ -32,7 +34,7 @@ public class AvanzamentoRuolo implements Richieste{
     }
 
     @Override
-    public String statoRichiesta() {
+    public String getStatoRichiesta() {
         return statoRichiesta;
     }
 
@@ -41,16 +43,16 @@ public class AvanzamentoRuolo implements Richieste{
     }
 
     @Override
-    public User getFrom() {
-        return utente;
+    public Users getFrom() {
+        return richiedente;
     }
 
-    public void setUtente(User utente) {
-        this.utente = utente;
+    public void setFrom(Users richiedente) {
+        this.richiedente = richiedente;
     }
 
     @Override
-    public User getTo() {
+    public Users getTo() {
         return null;
     }
 }

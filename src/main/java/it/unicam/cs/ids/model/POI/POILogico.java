@@ -1,0 +1,37 @@
+package it.unicam.cs.ids.model.POI;
+
+import it.unicam.cs.ids.enumeration.TipoCategorieLogico;
+import it.unicam.cs.ids.enumeration.TipoPOI;
+import it.unicam.cs.ids.model.Comune;
+import jakarta.persistence.*;
+import lombok.*;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+@Entity
+@DiscriminatorValue("LOGICO")
+public class POILogico extends POI{
+
+    private String informazioniStoriche;
+    private String area;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TipoCategorieLogico categoria;
+
+    public POILogico(String nome, String descrizione, Comune comune, double longitudine, double latitudine, String informazioniStoriche, String area, TipoCategorieLogico categoria) {
+        super(nome, descrizione, comune, longitudine, latitudine);
+
+        this.informazioniStoriche = informazioniStoriche;
+        this.area = area;
+
+        this.categoria = TipoCategorieLogico.valueOf(categoria.toString());
+    }
+
+    @Override
+    public TipoPOI getType() {
+        return TipoPOI.LOGICO;
+    }
+}

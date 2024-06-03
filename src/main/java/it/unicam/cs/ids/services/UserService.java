@@ -1,34 +1,56 @@
 package it.unicam.cs.ids.services;
 
-import it.unicam.cs.ids.model.User;
+import it.unicam.cs.ids.dto.UserRegistrationDto;
+import it.unicam.cs.ids.exceptions.UserException;
+import it.unicam.cs.ids.model.Users;
+import it.unicam.cs.ids.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
+@Service
 public class UserService {
-    private final List<User> userList = new ArrayList<>();
 
-    public User create(User user) {
-        userList.add(user);
-        return user;
+    @Autowired
+    private UserRepository userRepository;
+
+    public Users create(UserRegistrationDto userRegistrationDto) {
+        if (userRepository.findByUsername(userRegistrationDto.getUsername()).isPresent()) {
+            throw new UserException("l'utente esiste già.");
+        }
+
+        if (!userRegistrationDto.getPassword().equals(userRegistrationDto.getConfirmPassword())) {
+            throw new UserException("le password non corrispondono.");
+        }
+
+        Users user = new Users(
+                userRegistrationDto.getNome(),
+                userRegistrationDto.getCognome(),
+                userRegistrationDto.getEmail(),
+                userRegistrationDto.getUsername(),
+                userRegistrationDto.getPassword()
+        );
+
+        return userRepository.save(user);
     }
 
-    public User read(int id) {
-        Optional<User> User = userList.stream().filter(i -> i.getId() == id).findFirst();
-        return User.orElse(null);
+    public Users read(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserException("utente non trovato."));
     }
 
-    public void update(int id, User user) {
-        if (id >= 0 && id < userList.size() && userList.get(id).getId() == id) {
-            userList.set(id, user);
+    public Users update(Long id, Users updatedUsers) {
+        return userRepository.findById(id).map(user -> {
+            user.setUsername(updatedUsers.getUsername());
+            user.setPassword(updatedUsers.getPassword());
+            return userRepository.save(user);
+        }).orElseThrow(() -> new UserException("utente non trovato."));
+    }
+
+    public void delete(Long id) {
+        if (userRepository.existsById(id)) {
+            userRepository.deleteById(id);
         } else {
-            throw new IllegalArgumentException("Utente non trovato!");
+            throw new UserException("utente non trovato.");
         }
     }
-
-    public void delete(int id) {
-        userList.removeIf(i -> i.getId() == id);
-    }
-
 }

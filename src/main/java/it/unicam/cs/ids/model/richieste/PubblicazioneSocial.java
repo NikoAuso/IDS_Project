@@ -1,4 +1,7 @@
-package it.unicam.cs.ids.model;
+package it.unicam.cs.ids.model.richieste;
+
+import it.unicam.cs.ids.model.Contenuto;
+import it.unicam.cs.ids.model.Users;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,22 +9,20 @@ import java.util.List;
 public class PubblicazioneSocial implements Richieste {
     private int id;
     private String titolo;
-    private String decrizione;
+    private String descrizione;
     private List<Contenuto> contenuti;
     private List<String> social;
 
-    private User utente;
-    private User curatore;
+    private Users curatore;
 
     private String statoRichiesta;
 
     public PubblicazioneSocial(ArrayList<?> dati) {
         this.titolo = dati.get(0).toString();
-        this.decrizione = dati.get(1).toString();
+        this.descrizione = dati.get(1).toString();
         this.contenuti = null;
         this.social = null;
-        this.utente = (User) dati.get(4);
-        this.curatore = (User) dati.get(5);
+        this.curatore = (Users) dati.get(5);
         this.statoRichiesta = dati.get(6).toString();
     }
 
@@ -41,12 +42,12 @@ public class PubblicazioneSocial implements Richieste {
         this.titolo = titolo;
     }
 
-    public String getDecrizione() {
-        return decrizione;
+    public String getDescrizione() {
+        return descrizione;
     }
 
-    public void setDecrizione(String decrizione) {
-        this.decrizione = decrizione;
+    public void setDescrizione(String descrizione) {
+        this.descrizione = descrizione;
     }
 
     public List<Contenuto> getContenuti() {
@@ -66,7 +67,7 @@ public class PubblicazioneSocial implements Richieste {
     }
 
     @Override
-    public String statoRichiesta() {
+    public String getStatoRichiesta() {
         return statoRichiesta;
     }
 
@@ -75,20 +76,16 @@ public class PubblicazioneSocial implements Richieste {
     }
 
     @Override
-    public User getFrom() {
-        return utente;
-    }
-
-    public void setUtente(User utente) {
-        this.utente = utente;
-    }
-
-    @Override
-    public User getTo() {
+    public Users getFrom() {
         return curatore;
     }
 
-    public void setCuratore(User curatore) {
-        this.curatore = curatore;
+    public void setFrom(Users users) {
+        this.curatore = users;
+    }
+
+    @Override
+    public Users getTo() {
+        return null;
     }
 }

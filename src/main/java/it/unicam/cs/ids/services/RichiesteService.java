@@ -1,9 +1,9 @@
 package it.unicam.cs.ids.services;
 
 import it.unicam.cs.ids.enumeration.TipoRichiesta;
-import it.unicam.cs.ids.model.AvanzamentoRuolo;
-import it.unicam.cs.ids.model.PubblicazioneSocial;
-import it.unicam.cs.ids.model.Richieste;
+import it.unicam.cs.ids.model.richieste.AvanzamentoRuolo;
+import it.unicam.cs.ids.model.richieste.PubblicazioneSocial;
+import it.unicam.cs.ids.model.richieste.Richieste;
 
 import java.util.ArrayList;
 import java.util.List;

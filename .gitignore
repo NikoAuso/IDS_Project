@@ -63,6 +63,7 @@ replay_pid*
 
 #Visual paradigm
 *.vpp.bak_*
+.IDS_Project.vpp.lck
 
 # End of https://www.toptal.com/developers/gitignore/api/java,intellij+all
 # Ignore Gradle project-specific cache directory

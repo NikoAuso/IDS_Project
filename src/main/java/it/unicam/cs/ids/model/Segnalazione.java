@@ -9,7 +9,7 @@ public class Segnalazione {
 
     private String dettagli;
 
-    private User autore;
+    private Users autore;
     private String statoSegnalazione;
 
     private LocalDateTime data;
@@ -17,7 +17,7 @@ public class Segnalazione {
     public Segnalazione(ArrayList<?> dati) {
         this.data = (LocalDateTime) dati.get(0);
         this.statoSegnalazione = dati.get(1).toString();
-        this.autore = (User) dati.get(2);
+        this.autore = (Users) dati.get(2);
         this.dettagli = dati.get(3).toString();
         this.contenuto = (Contenuto) dati.get(4);
     }
@@ -46,11 +46,11 @@ public class Segnalazione {
         this.dettagli = dettagli;
     }
 
-    public User getAutore() {
+    public Users getAutore() {
         return autore;
     }
 
-    public void setAutore(User autore) {
+    public void setAutore(Users autore) {
         this.autore = autore;
     }
 
