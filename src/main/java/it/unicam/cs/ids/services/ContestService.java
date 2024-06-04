@@ -4,7 +4,6 @@ import it.unicam.cs.ids.model.Contest;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class ContestService {
     private final List<Contest> contestList = new ArrayList<>();
@@ -14,7 +13,7 @@ public class ContestService {
         return contest;
     }
 
-    public Contest read(int id) {
+    /*public Contest read(int id) {
         Optional<Contest> Contest = contestList.stream().filter(i -> i.getId() == id).findFirst();
         return Contest.orElse(null);
     }
@@ -29,6 +28,6 @@ public class ContestService {
 
     public void delete(int id) {
         contestList.removeIf(i -> i.getId() == id);
-    }
+    }*/
 
 }

@@ -1,6 +1,6 @@
 package it.unicam.cs.ids.services;
 
-import it.unicam.cs.ids.model.Segnalazione;
+import it.unicam.cs.ids.model.richieste.Segnalazione;
 
 import java.util.ArrayList;
 import java.util.List;

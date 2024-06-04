@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.jetbrains.annotations.NotNull;
 
+import java.sql.Time;
+import java.time.LocalTime;
 import java.time.OffsetTime;
 
 @Data
@@ -18,7 +20,8 @@ import java.time.OffsetTime;
 public class POIFisico extends POI {
 
     private String indirizzo;
-    private OffsetTime orariDiApertura;
+    private LocalTime orariDiApertura;
+    private LocalTime orariDiChiusura;
     private String serviziDisponibili;
     private String sitoWeb;
     private String contatti;
@@ -27,11 +30,12 @@ public class POIFisico extends POI {
     @Column(nullable = false)
     private TipoCategorieFisico categoria;
 
-    public POIFisico(String nome, String descrizione, Comune comune, double longitudine, double latitudine, String indirizzo, OffsetTime orariDiApertura, String serviziDisponibili, String sitoWeb, String contatti, @NotNull TipoCategorieFisico categoria) {
+    public POIFisico(String nome, String descrizione, Comune comune, double longitudine, double latitudine, String indirizzo, LocalTime orariDiApertura, LocalTime orariDiChiusura, String serviziDisponibili, String sitoWeb, String contatti, @NotNull TipoCategorieFisico categoria) {
         super(nome, descrizione, comune, longitudine, latitudine);
 
         this.indirizzo = indirizzo;
         this.orariDiApertura = orariDiApertura;
+        this.orariDiChiusura = orariDiChiusura;
         this.serviziDisponibili = serviziDisponibili;
         this.sitoWeb = sitoWeb;
         this.contatti = contatti;

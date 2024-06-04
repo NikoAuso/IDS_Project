@@ -1,61 +1,48 @@
 package it.unicam.cs.ids.model;
 
-public class Recensione {
-    private int id;
+import it.unicam.cs.ids.model.POI.POI;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-    private Users autore;
+import java.util.Date;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+public class Recensione {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long recensioneId;
 
     private String commento;
 
     private int voto;
 
-    private String created_at;
+    @ManyToOne
+    @JoinColumn(name = "poi")
+    private POI poi;
 
-    public Recensione(int id, Users autore, String commento, int voto, String created_at) {
-        this.id = id;
-        this.autore = autore;
+    @ManyToOne
+    @JoinColumn(name = "autore")
+    private Users autore;
+
+    @CreationTimestamp
+    @Column(updatable = false, name = "createdAt")
+    private Date createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updatedAt")
+    private Date updatedAt;
+
+    public Recensione(String commento, int voto, POI poi, Users autore) {
         this.commento = commento;
         this.voto = voto;
-        this.created_at = created_at;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Users getAutore() {
-        return autore;
-    }
-
-    public void setAutore(Users autore) {
+        this.poi = poi;
         this.autore = autore;
-    }
-
-    public String getCommento() {
-        return commento;
-    }
-
-    public void setCommento(String commento) {
-        this.commento = commento;
-    }
-
-    public int getVoto() {
-        return voto;
-    }
-
-    public void setVoto(int voto) {
-        this.voto = voto;
-    }
-
-    public String getCreated_at() {
-        return created_at;
-    }
-
-    public void setCreated_at(String created_at) {
-        this.created_at = created_at;
     }
 }

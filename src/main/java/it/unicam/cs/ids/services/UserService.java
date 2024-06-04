@@ -1,7 +1,6 @@
 package it.unicam.cs.ids.services;
 
 import it.unicam.cs.ids.dto.UserRegistrationDto;
-import it.unicam.cs.ids.exceptions.UserException;
 import it.unicam.cs.ids.model.Users;
 import it.unicam.cs.ids.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +14,11 @@ public class UserService {
 
     public Users create(UserRegistrationDto userRegistrationDto) {
         if (userRepository.findByUsername(userRegistrationDto.getUsername()).isPresent()) {
-            throw new UserException("l'utente esiste già.");
+            throw new RuntimeException("l'utente esiste già.");
         }
 
         if (!userRegistrationDto.getPassword().equals(userRegistrationDto.getConfirmPassword())) {
-            throw new UserException("le password non corrispondono.");
+            throw new RuntimeException("le password non corrispondono.");
         }
 
         Users user = new Users(
@@ -35,7 +34,7 @@ public class UserService {
 
     public Users read(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new UserException("utente non trovato."));
+                .orElseThrow(() -> new RuntimeException("utente non trovato."));
     }
 
     public Users update(Long id, Users updatedUsers) {
@@ -43,14 +42,14 @@ public class UserService {
             user.setUsername(updatedUsers.getUsername());
             user.setPassword(updatedUsers.getPassword());
             return userRepository.save(user);
-        }).orElseThrow(() -> new UserException("utente non trovato."));
+        }).orElseThrow(() -> new RuntimeException("utente non trovato."));
     }
 
     public void delete(Long id) {
         if (userRepository.existsById(id)) {
             userRepository.deleteById(id);
         } else {
-            throw new UserException("utente non trovato.");
+            throw new RuntimeException("utente non trovato.");
         }
     }
 }

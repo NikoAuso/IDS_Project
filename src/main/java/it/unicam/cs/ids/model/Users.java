@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -19,7 +19,7 @@ import java.util.List;
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long user_id;
+    private Long userId;
 
     private String nome;
 
@@ -40,21 +40,36 @@ public class Users {
     @Enumerated(EnumType.STRING)
     private TipoRuolo ruolo;
 
+    /**
+     * Lista dei POI preferiti dall'utente
+     */
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
-            name = "preferiti_users",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "poi_id")
+            name = "preferiti",
+            joinColumns = @JoinColumn(name = "userId"),
+            inverseJoinColumns = @JoinColumn(name = "poiId")
     )
-    private List<POI> poi_preferiti;
+    private List<POI> preferiti;
+
+    /**
+     * Lista dei contest creati dall'utente
+     */
+    @OneToMany(mappedBy = "itinerarioId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    private List<Itinerario> itinerari;
+
+    /**
+     * Lista delle recensioni scritte dall'utente
+     */
+    @OneToMany(mappedBy = "recensioneId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    private List<Recensione> recensione;
 
     @CreationTimestamp
-    @Column(updatable = false, name = "created_at")
-    private Date createdAt;
+    @Column(updatable = false, name = "createdAt")
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at")
-    private Date updatedAt;
+    @Column(name = "updatedAt")
+    private LocalDateTime updatedAt;
 
     public Users(String nome, String cognome, String email, String username, String password) {
         this.nome = nome;

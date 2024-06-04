@@ -1,3 +1,4 @@
+/*
 package it.unicam.cs.ids.services;
 
 import it.unicam.cs.ids.model.Itinerario;
@@ -39,14 +40,15 @@ public class ItinerarioService {
     public void addPOIToItinerario(int id, POI poi) {
         Itinerario Itinerario = read(id);
         if (Itinerario != null) {
-            Itinerario.addPointOfInterest(poi);
+            //Itinerario.addPointOfInterest(poi);
         }
     }
 
     public void removePOIFromItinerario(int id, POI poi) {
         Itinerario Itinerario = read(id);
         if (Itinerario != null) {
-            Itinerario.removePointOfInterest(poi);
+            //Itinerario.removePointOfInterest(poi);
         }
     }
 }
+*/

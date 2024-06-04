@@ -2,7 +2,10 @@ package it.unicam.cs.ids.model.POI;
 
 import it.unicam.cs.ids.enumeration.TipoPOI;
 import it.unicam.cs.ids.model.Comune;
+import it.unicam.cs.ids.model.Itinerario;
+import it.unicam.cs.ids.model.Recensione;
 import it.unicam.cs.ids.model.Users;
+import it.unicam.cs.ids.model.POI.contenuto.Contenuto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,11 +16,11 @@ import java.util.List;
 @Setter
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "tipo_poi", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn(name = "tipoPoi", discriminatorType = DiscriminatorType.STRING)
 public abstract class POI {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private int poi_id;
+    private int poiId;
 
     @Column(nullable = false)
     private String nome;
@@ -34,23 +37,43 @@ public abstract class POI {
     @Column(nullable = false)
     private boolean validato;
 
+    /**
+     * Comune in cui si trova il POI
+     */
     @ManyToOne
     @JoinColumn(name = "comune", nullable = false)
     private Comune comune;
 
+    /**
+     * Lista degli utenti che hanno aggiunto il POI ai preferiti
+     */
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
-            name = "preferiti_users",
-            joinColumns = @JoinColumn(name = "poi_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
+            name = "preferiti",
+            joinColumns = @JoinColumn(name = "poiId"),
+            inverseJoinColumns = @JoinColumn(name = "userId")
     )
     private List<Users> users;
 
-    /*@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    /**
+     * Lista dei contenuti associati al POI
+     */
+    @OneToMany(mappedBy = "contenutoId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Contenuto> contenuti;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Recensione> recensioni;*/
+    /**
+     * Lista degli itinerari che contengono il POI
+     */
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "poiItinerari",
+            joinColumns = @JoinColumn(name = "poiId"),
+            inverseJoinColumns = @JoinColumn(name = "itinerarioId")
+    )
+    private List<Itinerario> itinerari;
+
+    @OneToMany(mappedBy = "recensioneId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    private List<Recensione> recensioni;
 
     public POI() {
     }

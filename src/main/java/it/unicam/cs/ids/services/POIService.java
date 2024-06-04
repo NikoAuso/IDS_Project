@@ -1,64 +1,85 @@
 package it.unicam.cs.ids.services;
 
+import it.unicam.cs.ids.dto.POIDto;
 import it.unicam.cs.ids.enumeration.TipoPOI;
-import it.unicam.cs.ids.exceptions.POIException;
+import it.unicam.cs.ids.model.Comune;
 import it.unicam.cs.ids.model.POI.POI;
+import it.unicam.cs.ids.model.POI.POIFisico;
+import it.unicam.cs.ids.model.POI.POILogico;
+import it.unicam.cs.ids.repository.POIRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class POIService {
-    private final List<POI> poiList = new ArrayList<>();
 
-    public POI create(ArrayList<?> dati, TipoPOI type) throws POIException {
-        POI poi = createPOI(dati, type);
-        poiList.add(poi);
-        return poi;
+    @Autowired
+    private POIRepository poiRepository;
+
+    @Autowired
+    private ComuneService comuneService;
+
+    public POI create(POIDto poi, TipoPOI tipoPOI, Long comuneId) {
+        if (poiRepository.findByLatitudineAndLongitudine(poi.getLatitudine(), poi.getLongitudine()).isPresent()) {
+            throw new RuntimeException("E' già presente un POI a queste coordinate.");
+        }
+        return poiRepository.save(createPOI(poi, tipoPOI, comuneId));
     }
 
-    // Factory method
-    private POI createPOI(ArrayList<?> dati, TipoPOI type) throws POIException {
-        /*if (type.equals(TipoPOI.FISICO)) {
-            return new POIFisico(dati);
-        } else if (type.equals(TipoPOI.LOGICO)) {
-            return new POILogico(dati);
+    public POI read(Long id) {
+        return poiRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("POI non trovato."));
+    }
+
+    public POI update(Long id, POI poi) {
+        return poiRepository.save(poi);
+    }
+
+    public void delete(Long id) {
+        if (poiRepository.existsById(id)){
+            poiRepository.deleteById(id);
         } else {
-            throw new POIException("Tipo POI non supportato!");
-        }*/
-        return null;
-    }
-
-    /*public POI read(int id) {
-        Optional<POI> poi = poiList.stream().filter(p -> p.getPoi_id() == id).findFirst();
-        return poi.orElse(null);
-    }
-
-    public void update(int id, POI poi) throws POIException {
-        int index = -1;
-        for (int i = 0; i < poiList.size(); i++) {
-            if (poiList.get(i).getPoi_id() == id) {
-                index = i;
-                break;
-            }
+            throw new RuntimeException("POI non trovato.");
         }
-        if (index != -1) {
-            poiList.set(index, poi);
+    }
+
+    public List<POI> getAllPOIsOfComune(Long comuneId) {
+        Comune comune = comuneService.read(comuneId);
+        return poiRepository.findAllByComune(comune);
+    }
+
+    private POI createPOI (POIDto poi, TipoPOI tipoPOI, Long comuneId) {
+        Comune comune = comuneService.read(comuneId);
+        if(tipoPOI.equals(TipoPOI.FISICO)) {
+            return new POIFisico(
+                    poi.getNome(),
+                    poi.getDescrizione(),
+                    comune,
+                    poi.getLongitudine(),
+                    poi.getLatitudine(),
+                    poi.getIndirizzo(),
+                    poi.getOrariDiApertura(),
+                    poi.getOrariDiChiusura(),
+                    poi.getServiziDisponibili(),
+                    poi.getSitoWeb(),
+                    poi.getContatti(),
+                    poi.getCategoriaFisico()
+            );
+        } else if(tipoPOI.equals(TipoPOI.LOGICO)) {
+            return new POILogico(
+                    poi.getNome(),
+                    poi.getDescrizione(),
+                    comune,
+                    poi.getLongitudine(),
+                    poi.getLatitudine(),
+                    poi.getInformazioniStoriche(),
+                    poi.getArea(),
+                    poi.getCategoriaLogico()
+            );
         } else {
-            throw new POIException("POI non trovato!");
+            throw new RuntimeException("Tipo POI non valido.");
         }
     }
-
-    public void delete(int id) {
-        poiList.removeIf(p -> p.getPoi_id() == id);
-    }
-
-    public List<POI> getAllContenutiByPOIID(int id) {
-        List<POI> result = new ArrayList<>();
-        for (POI poi : poiList) {
-            if (poi.getComune().getId() == id) {
-                result.add(poi);
-            }
-        }
-        return result;
-    }*/
 }

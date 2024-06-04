@@ -1,12 +1,14 @@
 package it.unicam.cs.ids.model;
 
 import it.unicam.cs.ids.model.POI.POI;
+import it.unicam.cs.ids.repository.UserRepository;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.List;
@@ -18,7 +20,7 @@ import java.util.List;
 public class Comune {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long comuneId;
 
     @Column(nullable = false, unique = true)
     private String cap;
@@ -30,21 +32,22 @@ public class Comune {
     @JoinColumn(name = "curatore")
     private Users curatore;
 
-    @OneToMany(mappedBy = "poi_id", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "poiId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<POI> poi;
 
     @CreationTimestamp
-    @Column(updatable = false, name = "created_at")
+    @Column(updatable = false, name = "createdAt")
     private Date createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at")
+    @Column(name = "updatedAt")
     private Date updatedAt;
 
-    public Comune(String cap, String nome, String regione, String provincia) {
+    public Comune(String cap, String nome, String regione, String provincia, Users curatore) {
         this.cap = cap;
         this.nome = nome;
         this.regione = regione;
         this.provincia = provincia;
+        this.curatore = curatore;
     }
 }

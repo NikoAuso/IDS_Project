@@ -1,37 +1,54 @@
 package it.unicam.cs.ids.services;
 
+import it.unicam.cs.ids.dto.UserRegistrationDto;
 import it.unicam.cs.ids.model.Recensione;
+import it.unicam.cs.ids.model.Users;
+import it.unicam.cs.ids.repository.RecensioneRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class RecensioneService {
-    private final List<Recensione> recensioniList = new ArrayList<>();
+
+    @Autowired
+    private RecensioneRepository recensioneRepository;
 
     public Recensione create(Recensione recensione) {
-        recensioniList.add(recensione);
-        return recensione;
-    }
-
-    public Recensione read(int id) {
-        Optional<Recensione> recensione = recensioniList.stream().filter(r -> r.getId() == id).findFirst();
-        return recensione.orElse(null);
-    }
-
-    public void update(int id, Recensione recensione) {
-        if (id >= 0 && id < recensioniList.size() && recensioniList.get(id).getId() == id) {
-            recensioniList.set(id, recensione);
-        } else {
-            throw new IllegalArgumentException("Recensione non trovata!");
+        if (recensioneRepository.findById(recensione.getRecensioneId()).isPresent()) {
+            throw new RuntimeException("la recensione esiste già.");
         }
+
+        Recensione recensione1 = new Recensione(
+                recensione.getCommento(),
+                recensione.getVoto(),
+                recensione.getPoi(),
+                recensione.getAutore()
+        );
+
+        return recensioneRepository.save(recensione1);
     }
 
-    public void delete(int id) {
-        recensioniList.removeIf(r -> r.getId() == id);
+    public Recensione read(Long id) {
+        return recensioneRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("recensione non trovata."));
     }
 
-    public List<Recensione> getAll() {
-        return recensioniList;
+    public Recensione update(Long id, Recensione recensioneUpdated) {
+        return recensioneRepository.findById(id).map(recensione -> {
+            //TODO: implementare l'aggiornamento
+            return recensioneRepository.save(recensione);
+        }).orElseThrow(() -> new RuntimeException("recensione non trovata."));
+    }
+
+    public void delete(Long id) {
+        if (recensioneRepository.existsById(id)) {
+            recensioneRepository.deleteById(id);
+        } else {
+            throw new RuntimeException("recensione non trovata.");
+        }
     }
 }

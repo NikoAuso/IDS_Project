@@ -5,5 +5,5 @@ public enum TipoRuolo {
     CONTRIBUTOR,
     CURATORE,
     ANIMATORE,
-    ADMIN;
+    ADMIN
 }

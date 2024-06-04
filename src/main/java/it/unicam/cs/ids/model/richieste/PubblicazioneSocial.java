@@ -1,78 +1,60 @@
 package it.unicam.cs.ids.model.richieste;
 
-import it.unicam.cs.ids.model.Contenuto;
+import it.unicam.cs.ids.enumeration.StatusRichieste;
+import it.unicam.cs.ids.enumeration.TipoRichiesta;
 import it.unicam.cs.ids.model.Users;
+import it.unicam.cs.ids.model.POI.contenuto.Contenuto;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
 public class PubblicazioneSocial implements Richieste {
-    private int id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long richiestaId;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private StatusRichieste statoRichiesta;
+
+    @Column(nullable = false)
     private String titolo;
+
+    @Column(nullable = false)
     private String descrizione;
+
+    @Convert(converter = JsonListContenutoConverter.class)
     private List<Contenuto> contenuti;
+
+    @Convert(converter = JsonListStringConverter.class)
     private List<String> social;
 
+    @ManyToOne
+    @JoinColumn(name = "autore", nullable = false)
     private Users curatore;
 
-    private String statoRichiesta;
+    @CreationTimestamp
+    @Column(name = "createdAt", updatable = false)
+    private LocalDateTime createdAt;
 
-    public PubblicazioneSocial(ArrayList<?> dati) {
-        this.titolo = dati.get(0).toString();
-        this.descrizione = dati.get(1).toString();
-        this.contenuti = null;
-        this.social = null;
-        this.curatore = (Users) dati.get(5);
-        this.statoRichiesta = dati.get(6).toString();
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getTitolo() {
-        return titolo;
-    }
-
-    public void setTitolo(String titolo) {
-        this.titolo = titolo;
-    }
-
-    public String getDescrizione() {
-        return descrizione;
-    }
-
-    public void setDescrizione(String descrizione) {
-        this.descrizione = descrizione;
-    }
-
-    public List<Contenuto> getContenuti() {
-        return contenuti;
-    }
-
-    public void setContenuti(List<Contenuto> contenuti) {
-        this.contenuti = contenuti;
-    }
-
-    public List<String> getSocial() {
-        return social;
-    }
-
-    public void setSocial(List<String> social) {
-        this.social = social;
-    }
+    @UpdateTimestamp
+    @Column(name = "updatedAt")
+    private LocalDateTime updatedAt;
 
     @Override
-    public String getStatoRichiesta() {
-        return statoRichiesta;
-    }
-
-    public void setStatoRichiesta(String statoRichiesta) {
-        this.statoRichiesta = statoRichiesta;
+    public Long getId() {
+        return richiestaId;
     }
 
     @Override
@@ -80,12 +62,23 @@ public class PubblicazioneSocial implements Richieste {
         return curatore;
     }
 
-    public void setFrom(Users users) {
-        this.curatore = users;
-    }
-
     @Override
     public Users getTo() {
         return null;
+    }
+
+    @Override
+    public String getDettagli() {
+        return this.toString();
+    }
+
+    @Override
+    public LocalDateTime getData() {
+        return createdAt;
+    }
+
+    @Override
+    public TipoRichiesta getTipoRichiesta() {
+        return TipoRichiesta.PUBBLICAZIONE_SOCIAL;
     }
 }

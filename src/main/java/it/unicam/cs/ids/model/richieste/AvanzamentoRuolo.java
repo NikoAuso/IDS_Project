@@ -1,58 +1,74 @@
 package it.unicam.cs.ids.model.richieste;
 
+import it.unicam.cs.ids.enumeration.StatusRichieste;
+import it.unicam.cs.ids.enumeration.TipoRichiesta;
 import it.unicam.cs.ids.model.Users;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
 public class AvanzamentoRuolo implements Richieste{
-    private int id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long richiestaId;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private StatusRichieste statoRichiesta;
+
+    @ManyToOne
+    @JoinColumn(name = "richiedente", nullable = false)
     private Users richiedente;
+
+    @Column(nullable = false)
     private String commento;
 
-    private String statoRichiesta;
+    @CreationTimestamp
+    @Column(name = "createdAt", updatable = false)
+    private LocalDateTime createdAt;
 
-    public AvanzamentoRuolo(ArrayList<?> dati) {
-        this.richiedente = (Users) dati.get(0);
-        this.commento = dati.get(1).toString();
-        this.statoRichiesta = dati.get(2).toString();
-    }
+    @UpdateTimestamp
+    @Column(name = "updatedAt")
+    private LocalDateTime updatedAt;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getCommento() {
-        return commento;
-    }
-
-    public void setCommento(String commento) {
-        this.commento = commento;
-    }
 
     @Override
-    public String getStatoRichiesta() {
-        return statoRichiesta;
-    }
-
-    public void setStatoRichiesta(String statoRichiesta) {
-        this.statoRichiesta = statoRichiesta;
+    public Long getId() {
+        return richiestaId;
     }
 
     @Override
     public Users getFrom() {
-        return richiedente;
-    }
-
-    public void setFrom(Users richiedente) {
-        this.richiedente = richiedente;
+        return null;
     }
 
     @Override
     public Users getTo() {
+        return null;
+    }
+
+    @Override
+    public String getDettagli() {
+        return "";
+    }
+
+    @Override
+    public LocalDateTime getData() {
+        return null;
+    }
+
+    @Override
+    public TipoRichiesta getTipoRichiesta() {
         return null;
     }
 }

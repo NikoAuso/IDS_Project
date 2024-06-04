@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface ComuneRepository extends JpaRepository<Comune, Long> {
     Optional<Comune> findComuneByNome(String comuneName);
+
+    Optional<Comune> findComuneByCap(String cap);
 }

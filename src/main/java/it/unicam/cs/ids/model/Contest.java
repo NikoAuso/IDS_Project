@@ -1,115 +1,56 @@
 package it.unicam.cs.ids.model;
 
+import it.unicam.cs.ids.model.POI.contenuto.Contenuto;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
 public class Contest {
-    private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long contestId;
+
+    @Column(nullable = false)
     private String nome;
+
+    @Column(nullable = false)
     private String descrizione;
-    private Boolean tipo;
+
+    @Column(nullable = false)
     private String tema;
+
+    @Column(nullable = false)
+    private Boolean aperto;
+
+    @ManyToOne
+    @JoinColumn(name = "animatore")
+    private Users animatore;
+
+    @OneToMany(mappedBy = "contenutoId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Contenuto> contenuti;
+
+    @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Users> utenti;
+
+
     private LocalDateTime dataInizio;
     private LocalDateTime dataFine;
-    private Users curatore;
 
-    // Costruttori, getters e setters
+    @CreationTimestamp
+    @Column(name = "createdAt", updatable = false)
+    private LocalDateTime createdAt;
 
-    public Contest(Integer id, String nome, String descrizione, Boolean tipo, String tema, List<Contenuto> contenuti, List<Users> utenti, LocalDateTime dataInizio, LocalDateTime dataFine, Users curatore) {
-        this.id = id;
-        this.nome = nome;
-        this.descrizione = descrizione;
-        this.tipo = tipo;
-        this.tema = tema;
-        this.contenuti = contenuti;
-        this.utenti = utenti;
-        this.dataInizio = dataInizio;
-        this.dataFine = dataFine;
-        this.curatore = curatore;
-    }
-
-    // Getters e setters
-
-
-    public String getDescrizione() {
-        return descrizione;
-    }
-
-    public void setDescrizione(String descrizione) {
-        this.descrizione = descrizione;
-    }
-
-    public LocalDateTime getDataInizio() {
-        return dataInizio;
-    }
-
-    public void setDataInizio(LocalDateTime dataInizio) {
-        this.dataInizio = dataInizio;
-    }
-
-    public LocalDateTime getDataFine() {
-        return dataFine;
-    }
-
-    public void setDataFine(LocalDateTime dataFine) {
-        this.dataFine = dataFine;
-    }
-
-    public Users getCuratore() {
-        return curatore;
-    }
-
-    public void setCuratore(Users curatore) {
-        this.curatore = curatore;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public Boolean getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(Boolean tipo) {
-        this.tipo = tipo;
-    }
-
-    public String getTema() {
-        return tema;
-    }
-
-    public void setTema(String tema) {
-        this.tema = tema;
-    }
-
-    public List<Contenuto> getContenuti() {
-        return contenuti;
-    }
-
-    public void setContenuti(List<Contenuto> contenuti) {
-        this.contenuti = contenuti;
-    }
-
-    public List<Users> getUtenti() {
-        return utenti;
-    }
-
-    public void setUtenti(List<Users> utenti) {
-        this.utenti = utenti;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    @UpdateTimestamp
+    @Column(name = "updatedAt")
+    private LocalDateTime updatedAt;
 }
