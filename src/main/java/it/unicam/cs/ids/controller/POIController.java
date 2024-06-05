@@ -1,13 +1,13 @@
 package it.unicam.cs.ids.controller;
 
+import it.unicam.cs.ids.dto.POIDto;
 import it.unicam.cs.ids.model.POI.POI;
 import it.unicam.cs.ids.services.POIService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -36,6 +36,19 @@ public class POIController {
     public ResponseEntity<?> getPOIById(@RequestParam Long id) {
         try {
             return ResponseEntity.ok(poiService.read(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Si è verificato un errore: " + e.getMessage());
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<?> createPOI(@RequestBody @Valid POIDto poiDto, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body("Si sono verificati errori di validazione: " + result.getAllErrors());
+        }
+
+        try {
+            return ResponseEntity.ok(poiService.create(poiDto, poiDto.getTipoPOI(), poiDto.getComune()));
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Si è verificato un errore: " + e.getMessage());
         }

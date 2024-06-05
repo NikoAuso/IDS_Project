@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class AvanzamentoRuolo implements Richieste{
+public class AccreditamentoCuratore implements Richieste {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

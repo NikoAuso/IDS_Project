@@ -2,18 +2,22 @@ package it.unicam.cs.ids.services;
 
 import it.unicam.cs.ids.dto.POIDto;
 import it.unicam.cs.ids.enumeration.TipoPOI;
+import it.unicam.cs.ids.enumeration.TipoRuolo;
 import it.unicam.cs.ids.model.Comune;
 import it.unicam.cs.ids.model.POI.POI;
 import it.unicam.cs.ids.model.POI.POIFisico;
 import it.unicam.cs.ids.model.POI.POILogico;
+import it.unicam.cs.ids.model.Users;
+import it.unicam.cs.ids.observer.Publisher;
 import it.unicam.cs.ids.repository.POIRepository;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class POIService {
+public class POIService extends Publisher {
 
     @Autowired
     private POIRepository poiRepository;
@@ -25,7 +29,17 @@ public class POIService {
         if (poiRepository.findByLatitudineAndLongitudine(poi.getLatitudine(), poi.getLongitudine()).isPresent()) {
             throw new RuntimeException("E' già presente un POI a queste coordinate.");
         }
-        return poiRepository.save(createPOI(poi, tipoPOI, comuneId));
+
+        POI poiResult = poiRepository.save(createPOI(poi, tipoPOI, comuneId));
+
+        try {
+            Users user = comuneService.read(comuneId).getCuratore();
+            notifyObservers(user, "POI creato");
+        } catch (Exception e) {
+            System.out.println("Errore: " + e.getMessage());
+        }
+
+        return poiResult;
     }
 
     public POI read(Long id) {

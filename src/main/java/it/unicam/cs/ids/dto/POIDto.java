@@ -2,6 +2,7 @@ package it.unicam.cs.ids.dto;
 
 import it.unicam.cs.ids.enumeration.TipoCategorieFisico;
 import it.unicam.cs.ids.enumeration.TipoCategorieLogico;
+import it.unicam.cs.ids.enumeration.TipoPOI;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
@@ -23,6 +24,9 @@ public class POIDto {
 
     @NotEmpty(message = "Il comune è richiesto")
     private Long comune;
+
+    @NotEmpty(message = "Il tipo di POI è richiesto")
+    private TipoPOI tipoPOI;
 
     // Campi specifici per i POI fisici
     private String indirizzo;

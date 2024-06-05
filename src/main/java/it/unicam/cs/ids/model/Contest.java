@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.model;
 
 import it.unicam.cs.ids.model.POI.contenuto.Contenuto;
+import it.unicam.cs.ids.model.POI.contenuto.ContenutoContest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,10 +37,14 @@ public class Contest {
     @JoinColumn(name = "animatore")
     private Users animatore;
 
-    @OneToMany(mappedBy = "contenutoId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    private List<Contenuto> contenuti;
+    private String contenuti;
 
-    @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "partecipantiContest",
+            joinColumns = @JoinColumn(name = "contestId"),
+            inverseJoinColumns = @JoinColumn(name = "userId")
+    )
     private List<Users> utenti;
 
 

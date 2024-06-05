@@ -58,6 +58,11 @@ public class PubblicazioneSocial implements Richieste {
     }
 
     @Override
+    public String motivazione() {
+        return "";
+    }
+
+    @Override
     public Users getFrom() {
         return curatore;
     }

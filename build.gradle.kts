@@ -31,7 +31,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
 
     // DATABASE POSTGRESQL
-    runtimeOnly("org.postgresql:postgresql")
+    // runtimeOnly("org.postgresql:postgresql")
 
     // LOMBOK
     compileOnly("org.projectlombok:lombok")
@@ -40,20 +40,20 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
     // DATABASE H2
-    // runtimeOnly("com.h2database:h2")
+     runtimeOnly("com.h2database:h2")
 
     // JWT AUTHENTICATION DEPENDENCIES
-    // implementation("io.jsonwebtoken:jjwt-api:0.12.5")
-    // runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.5")
-    // runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.5")
+     // implementation("io.jsonwebtoken:jjwt-api:0.12.5")
+     // runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.5")
+     // runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.5")
 
     // OTHER DEPENDENCIES
     //implementation("org.springframework.boot:spring-boot-starter-mail")
-    //implementation("org.springdoc:springdoc-openapi-ui:1.5.10")
+    // implementation("org.springdoc:springdoc-openapi-ui:1.5.10")
 
     // TEST DEPENDENCIES
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    //testImplementation("org.springframework.security:spring-security-test")
+    // testImplementation("org.springframework.security:spring-security-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 

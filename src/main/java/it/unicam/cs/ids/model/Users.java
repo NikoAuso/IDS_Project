@@ -52,7 +52,18 @@ public class Users {
     private List<POI> preferiti;
 
     /**
-     * Lista dei contest creati dall'utente
+     * Lista dei contest a cui l'utente partecipa
+     */
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "partecipantiContest",
+            joinColumns = @JoinColumn(name = "userId"),
+            inverseJoinColumns = @JoinColumn(name = "contestId")
+    )
+    private List<Contest> partecipazioneContest;
+
+    /**
+     * Lista degli itinerari creati dall'utente
      */
     @OneToMany(mappedBy = "itinerarioId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Itinerario> itinerari;

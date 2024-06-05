@@ -11,6 +11,8 @@ public interface Richieste {
 
     StatusRichieste getStatoRichiesta();
 
+    String motivazione();
+
     Users getFrom();
     Users getTo();
 
