@@ -1,6 +1,5 @@
 package it.unicam.cs.ids.model;
 
-import it.unicam.cs.ids.model.POI.contenuto.Contenuto;
 import it.unicam.cs.ids.model.POI.contenuto.ContenutoContest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -37,7 +36,8 @@ public class Contest {
     @JoinColumn(name = "animatore")
     private Users animatore;
 
-    private String contenuti;
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<ContenutoContest> contenuti;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(

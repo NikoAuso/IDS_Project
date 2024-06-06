@@ -4,13 +4,20 @@ import it.unicam.cs.ids.dto.UserRegistrationDto;
 import it.unicam.cs.ids.model.Users;
 import it.unicam.cs.ids.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public Users create(UserRegistrationDto userRegistrationDto) {
         if (userRepository.findByUsername(userRegistrationDto.getUsername()).isPresent()) {
@@ -26,7 +33,7 @@ public class UserService {
                 userRegistrationDto.getCognome(),
                 userRegistrationDto.getEmail(),
                 userRegistrationDto.getUsername(),
-                userRegistrationDto.getPassword()
+                passwordEncoder.encode(userRegistrationDto.getPassword())
         );
 
         return userRepository.save(user);
@@ -51,5 +58,11 @@ public class UserService {
         } else {
             throw new RuntimeException("utente non trovato.");
         }
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("utente non trovato."));
     }
 }

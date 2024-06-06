@@ -4,7 +4,10 @@ import it.unicam.cs.ids.enumeration.TipoCategorieLogico;
 import it.unicam.cs.ids.enumeration.TipoPOI;
 import it.unicam.cs.ids.model.Comune;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
@@ -27,7 +30,7 @@ public class POILogico extends POI{
         this.informazioniStoriche = informazioniStoriche;
         this.area = area;
 
-        this.categoria = TipoCategorieLogico.valueOf(categoria.toString());
+        this.categoria = categoria;
     }
 
     @Override

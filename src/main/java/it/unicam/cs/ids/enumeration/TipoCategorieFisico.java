@@ -13,4 +13,5 @@ public enum TipoCategorieFisico {
     STAZIONE,
     RELIGIONE,
     STRUTTURA_RICETTIVA,
+    GENERICO
 }

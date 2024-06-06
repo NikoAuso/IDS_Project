@@ -5,26 +5,24 @@ import it.unicam.cs.ids.enumeration.TipoContenuto;
 import it.unicam.cs.ids.model.POI.POI;
 import it.unicam.cs.ids.model.Users;
 import it.unicam.cs.ids.model.richieste.Segnalazione;
-import it.unicam.cs.ids.repository.ContenutoRepository;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipoContenuto", discriminatorType = DiscriminatorType.STRING)
 public class Contenuto {
 
     @Id

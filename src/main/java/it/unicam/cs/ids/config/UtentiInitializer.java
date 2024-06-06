@@ -6,6 +6,7 @@ import it.unicam.cs.ids.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class UtentiInitializer {
@@ -13,31 +14,40 @@ public class UtentiInitializer {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @PostConstruct
     public void init() {
 
         // UTENTI
-        Users userTurista = new Users("test", "turista", "test_turista@example.it", "test_turista", "test_turista");
+        Users userTurista = new Users("test", "turista", "test_turista@example.it", "test_turista", null);
+        userTurista.setPassword(passwordEncoder.encode("test_turista"));
         userTurista.setAutorizzato(false);
         userTurista.setRuolo(TipoRuolo.TURISTA);
 
-        Users userContributor = new Users("test", "contributor", "test_contributor@example.it", "test_contributor", "test_contributor");
+        Users userContributor = new Users("test", "contributor", "test_contributor@example.it", "test_contributor", null);
+        userContributor.setPassword(passwordEncoder.encode("test_contributor"));
         userContributor.setAutorizzato(false);
         userContributor.setRuolo(TipoRuolo.CONTRIBUTOR);
 
-        Users userContributorAutorizzato = new Users("test", "contributor_autorizzato", "test_contributor_autorizzato@example.it", "test_contributor_autorizzato", "test_contributor_autorizzato");
+        Users userContributorAutorizzato = new Users("test", "contributor_autorizzato", "test_contributor_autorizzato@example.it", "test_contributor_autorizzato", null);
+        userContributorAutorizzato.setPassword(passwordEncoder.encode("test_contributor_autorizzato"));
         userContributorAutorizzato.setAutorizzato(true);
         userContributorAutorizzato.setRuolo(TipoRuolo.CONTRIBUTOR);
 
-        Users userCuratore = new Users("test", "curatore", "test_curatore@example.it", "test_curatore", "test_curatore");
+        Users userCuratore = new Users("test", "curatore", "test_curatore@example.it", "test_curatore", null);
+        userCuratore.setPassword(passwordEncoder.encode("test_curatore"));
         userCuratore.setAutorizzato(true);
         userCuratore.setRuolo(TipoRuolo.CURATORE);
 
-        Users userAnimatore = new Users("test", "animatore", "test_animatore@example.it", "test_animatore", "test_animatore");
+        Users userAnimatore = new Users("test", "animatore", "test_animatore@example.it", "test_animatore", null);
+        userAnimatore.setPassword(passwordEncoder.encode("test_animatore"));
         userAnimatore.setAutorizzato(true);
         userAnimatore.setRuolo(TipoRuolo.ANIMATORE);
 
-        Users userAdmin = new Users("test", "admin", "test_admin@example.it", "test_admin", "test_admin");
+        Users userAdmin = new Users("test", "admin", "test_admin@example.it", "test_admin", null);
+        userAdmin.setPassword(passwordEncoder.encode("test_admin"));
         userAdmin.setAutorizzato(true);
         userAdmin.setRuolo(TipoRuolo.ADMIN);
 

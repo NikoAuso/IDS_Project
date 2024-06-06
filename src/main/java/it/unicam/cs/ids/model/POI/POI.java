@@ -2,10 +2,8 @@ package it.unicam.cs.ids.model.POI;
 
 import it.unicam.cs.ids.enumeration.TipoPOI;
 import it.unicam.cs.ids.model.Comune;
-import it.unicam.cs.ids.model.Itinerario;
-import it.unicam.cs.ids.model.Recensione;
-import it.unicam.cs.ids.model.Users;
 import it.unicam.cs.ids.model.POI.contenuto.Contenuto;
+import it.unicam.cs.ids.model.Recensione;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -47,13 +45,13 @@ public abstract class POI {
     /**
      * Lista degli utenti che hanno aggiunto il POI ai preferiti
      */
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    /*@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             name = "preferiti",
             joinColumns = @JoinColumn(name = "poiId"),
             inverseJoinColumns = @JoinColumn(name = "userId")
     )
-    private List<Users> users;
+    private List<Users> users;*/
 
     /**
      * Lista dei contenuti associati al POI
@@ -61,16 +59,16 @@ public abstract class POI {
     @OneToMany(mappedBy = "contenutoId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Contenuto> contenuti;
 
-    /**
+/*    *//**
      * Lista degli itinerari che contengono il POI
-     */
+     *//*
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             name = "poiItinerari",
             joinColumns = @JoinColumn(name = "poiId"),
             inverseJoinColumns = @JoinColumn(name = "itinerarioId")
     )
-    private List<Itinerario> itinerari;
+    private List<Itinerario> itinerari;*/
 
     @OneToMany(mappedBy = "recensioneId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Recensione> recensioni;

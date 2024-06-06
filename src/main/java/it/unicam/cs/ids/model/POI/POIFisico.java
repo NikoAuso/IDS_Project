@@ -4,12 +4,13 @@ import it.unicam.cs.ids.enumeration.TipoCategorieFisico;
 import it.unicam.cs.ids.enumeration.TipoPOI;
 import it.unicam.cs.ids.model.Comune;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.Time;
 import java.time.LocalTime;
-import java.time.OffsetTime;
 
 @Data
 @NoArgsConstructor
@@ -40,7 +41,7 @@ public class POIFisico extends POI {
         this.sitoWeb = sitoWeb;
         this.contatti = contatti;
 
-        this.categoria = TipoCategorieFisico.valueOf(categoria.toString());
+        this.categoria = categoria;
     }
 
     @Override

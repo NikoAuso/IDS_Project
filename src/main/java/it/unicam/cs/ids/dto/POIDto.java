@@ -3,7 +3,9 @@ package it.unicam.cs.ids.dto;
 import it.unicam.cs.ids.enumeration.TipoCategorieFisico;
 import it.unicam.cs.ids.enumeration.TipoCategorieLogico;
 import it.unicam.cs.ids.enumeration.TipoPOI;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalTime;
@@ -16,16 +18,16 @@ public class POIDto {
     @NotEmpty(message = "La descrizione è richiesta")
     private String descrizione;
 
-    @NotEmpty(message = "La longitudine è richiesta")
+    @Digits(integer = 5, fraction = 6, message = "La longitudine deve essere composta da 2 interi e 6 decimali")
     private double longitudine;
 
-    @NotEmpty(message = "La latitudine è richiesta")
+    @Digits(integer = 5, fraction = 6, message = "La latitudine deve essere composta da 2 interi e 6 decimali")
     private double latitudine;
 
-    @NotEmpty(message = "Il comune è richiesto")
+    @NotNull(message = "Il comune è richiesto")
     private Long comune;
 
-    @NotEmpty(message = "Il tipo di POI è richiesto")
+    @NotNull(message = "Il tipo di POI è richiesto")
     private TipoPOI tipoPOI;
 
     // Campi specifici per i POI fisici

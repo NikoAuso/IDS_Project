@@ -3,10 +3,11 @@ package it.unicam.cs.ids.services;
 import it.unicam.cs.ids.model.Contest;
 import it.unicam.cs.ids.repository.ContestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class ContestService {
 
     @Autowired
