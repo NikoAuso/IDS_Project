@@ -5,6 +5,7 @@ import it.unicam.cs.ids.enumeration.TipoContenuto;
 import it.unicam.cs.ids.model.POI.POI;
 import it.unicam.cs.ids.model.Users;
 import it.unicam.cs.ids.model.richieste.Segnalazione;
+import it.unicam.cs.ids.repository.ContenutoRepository;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
@@ -12,9 +13,12 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Data
 @NoArgsConstructor
@@ -69,6 +73,7 @@ public class Contenuto {
     @Column(name = "updatedAt")
     private LocalDateTime updatedAt;
 
+
     public static class Builder {
         private POI poi;
         private TipoContenuto tipo;
@@ -83,12 +88,14 @@ public class Contenuto {
         private LocalDateTime dataInizio;
         private LocalDateTime dataFine;
 
-        private String note;;
+        private String note;
+
 
         public Builder setPOI(POI poi) {
             this.poi = poi;
             return this;
         }
+
 
         public Builder setTipo(TipoContenuto tipo) {
             this.tipo = tipo;

@@ -23,6 +23,7 @@ public class ContenutoService {
     @Autowired
     private UserService userService;
 
+
     public Contenuto create(ContenutoDto contenutoDto) {
         POI poi = poiService.read(contenutoDto.getPoiId());
         Users autore = userService.read(contenutoDto.getAutoreId());
@@ -63,22 +64,37 @@ public class ContenutoService {
 
     public Contenuto read(Long id) {
         return contenutoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("contenuto non trovato."));
+                .orElseThrow(() -> new RuntimeException("Contenuto non trovato."));
     }
 
-    /*public void update(int id, Contenuto contenuto) {
-        if (id >= 0 && id < contenutoList.size() && contenutoList.get(id).getContenuto_id() == id) {
-            contenutoList.set(id, contenuto);
-        } else {
-            throw new IllegalArgumentException("Contenuto non trovato!");
-        }
+    public Contenuto update(Long id, ContenutoDto contenutoDto) {
+        Contenuto contenuto = contenutoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Contenuto non trovato."));
+
+        POI poi = poiService.read(contenutoDto.getPoiId());
+        Users autore = userService.read(contenutoDto.getAutoreId());
+
+        contenuto.setTitolo(contenutoDto.getTitolo());
+        contenuto.setDescrizione(contenutoDto.getDescrizione());
+        contenuto.setUrl(contenutoDto.getUrl());
+        contenuto.setDataInizio(contenutoDto.getDataInizio());
+        contenuto.setDataFine(contenutoDto.getDataFine());
+        contenuto.setNote(contenutoDto.getNote());
+        contenuto.setValidato(contenutoDto.isValidato());
+
+        contenutoRepository.save(contenuto);
+        return contenuto;
     }
 
-    public void delete(int id) {
-        contenutoList.removeIf(i -> i.getContenuto_id() == id);
-    }*/
 
-    public List<Contenuto> getAllContenutiByPOI(POI poi) {
+    public void delete(Long id) {
+        contenutoRepository.deleteById(id);
+    }
+
+    public List<Contenuto> getAllContenutiByPOI(Long poiId) {
+        POI poi = poiService.read(poiId);
         return contenutoRepository.findContenutoByPoi(poi);
     }
+
+
 }

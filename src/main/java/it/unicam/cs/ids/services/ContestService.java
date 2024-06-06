@@ -1,33 +1,44 @@
 package it.unicam.cs.ids.services;
 
 import it.unicam.cs.ids.model.Contest;
+import it.unicam.cs.ids.repository.ContestRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
+
 import java.util.List;
 
 public class ContestService {
-    private final List<Contest> contestList = new ArrayList<>();
+
+    @Autowired
+    private ContestRepository contestRepository;
 
     public Contest create(Contest contest) {
-        contestList.add(contest);
-        return contest;
+        return contestRepository.save(contest);
     }
 
-    /*public Contest read(int id) {
-        Optional<Contest> Contest = contestList.stream().filter(i -> i.getId() == id).findFirst();
-        return Contest.orElse(null);
+    public Contest read(Long id) {
+        return contestRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Contest non trovato"));
     }
 
-    public void update(int id, Contest contest) {
-        if (id >= 0 && id < contestList.size() && contestList.get(id).getId() == id) {
-            contestList.set(id, contest);
-        } else {
-            throw new IllegalArgumentException("Contest non trovato!");
-        }
+    public Contest update(Long id, Contest contestDetails) {
+        Contest contest = contestRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Contest non trovato"));
+
+        contest.setNome(contestDetails.getNome());
+        contest.setDescrizione(contestDetails.getDescrizione());
+        contest.setDataInizio(contestDetails.getDataInizio());
+        contest.setDataFine(contestDetails.getDataFine());
+
+        return contestRepository.save(contest);
     }
 
-    public void delete(int id) {
-        contestList.removeIf(i -> i.getId() == id);
-    }*/
+    public void delete(Long id) {
+        contestRepository.deleteById(id);
+    }
+
+    public List<Contest> getAllContests() {
+        return contestRepository.findAll();
+    }
 
 }
