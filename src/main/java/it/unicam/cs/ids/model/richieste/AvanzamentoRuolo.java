@@ -76,4 +76,13 @@ public class AvanzamentoRuolo implements Richieste{
     public TipoRichiesta getTipoRichiesta() {
         return null;
     }
+
+    @Override
+    public void setContenuto(String contenuto) {
+    }
+
+    @Override
+    public void setStato(String stato) {
+
+    }
 }

@@ -48,6 +48,11 @@ public class AccreditamentoCuratore implements Richieste {
     }
 
     @Override
+    public StatusRichieste getStatoRichiesta() {
+        return null;
+    };
+
+    @Override
     public String motivazione() {
         return "";
     }
@@ -75,5 +80,15 @@ public class AccreditamentoCuratore implements Richieste {
     @Override
     public TipoRichiesta getTipoRichiesta() {
         return null;
+    }
+
+    @Override
+    public void setContenuto(String contenuto) {
+
+    }
+
+    @Override
+    public void setStato(String stato) {
+
     }
 }

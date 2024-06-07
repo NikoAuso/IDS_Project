@@ -7,8 +7,6 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,8 +32,8 @@ public class ComuneController {
         }
     }
 
-    @GetMapping("/comune")
-    public ResponseEntity<?> getComuneById(@RequestParam Long id) {
+    @GetMapping("/comune/{id}")
+    public ResponseEntity<?> getComuneById(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(comuneService.read(id));
         } catch (Exception e) {
@@ -47,13 +45,12 @@ public class ComuneController {
     @PostMapping("/api/comune")
     public ResponseEntity<?> createComune(@RequestBody @Valid ComuneDto comuneDto,
                                                BindingResult result) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body("Si sono verificati errori di validazione: " + result.getAllErrors());
         }
 
         try {
-            return ResponseEntity.ok(comuneService.create(comuneDto) + " - Utente autenticato: " + authentication.getName() + " - Ruolo: " + authentication.getAuthorities());
+            return ResponseEntity.ok(comuneService.create(comuneDto));
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Si è verificato un errore: " + e.getMessage());
         }

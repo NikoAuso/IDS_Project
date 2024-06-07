@@ -40,4 +40,13 @@ public class Itinerario {
     @ManyToOne
     @JoinColumn(name = "autore", nullable = false)
     private Users autore;
+
+    public Itinerario(String nome, String descrizione, String distanza, List<POI> percorso, List<MaterialeMultimediale> materialiMultimediali, Users autore){
+        this.nome = nome;
+        this.descrizione = descrizione;
+        this.distanza = distanza;
+        this.percorso = percorso;
+        this.materialiMultimediali = materialiMultimediali;
+        this.autore = autore;
+    }
 }

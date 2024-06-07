@@ -27,6 +27,8 @@ public class Segnalazione implements Richieste {
     @Column(nullable = false)
     private String dettagli;
 
+    private String motivazione;
+
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false)
     private Users autore;
@@ -65,5 +67,13 @@ public class Segnalazione implements Richieste {
     @Override
     public TipoRichiesta getTipoRichiesta() {
         return TipoRichiesta.SEGNALAZIONE_CONTENUTO;
+    }
+
+    @Override
+    public void setContenuto(String contenuto) {
+    }
+
+    @Override
+    public void setStato(String stato) {
     }
 }

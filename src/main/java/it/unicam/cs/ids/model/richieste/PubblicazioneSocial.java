@@ -2,8 +2,8 @@ package it.unicam.cs.ids.model.richieste;
 
 import it.unicam.cs.ids.enumeration.StatusRichieste;
 import it.unicam.cs.ids.enumeration.TipoRichiesta;
-import it.unicam.cs.ids.model.Users;
 import it.unicam.cs.ids.model.POI.contenuto.Contenuto;
+import it.unicam.cs.ids.model.Users;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -85,5 +85,13 @@ public class PubblicazioneSocial implements Richieste {
     @Override
     public TipoRichiesta getTipoRichiesta() {
         return TipoRichiesta.PUBBLICAZIONE_SOCIAL;
+    }
+
+    @Override
+    public void setContenuto(String contenuto) {
+    }
+
+    @Override
+    public void setStato(String stato) {
     }
 }

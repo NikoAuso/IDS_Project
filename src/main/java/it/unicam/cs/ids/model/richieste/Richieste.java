@@ -21,4 +21,8 @@ public interface Richieste {
     LocalDateTime getData();
 
     TipoRichiesta getTipoRichiesta();
+
+    void setContenuto(String contenuto);
+
+    void setStato(String stato);
 }
