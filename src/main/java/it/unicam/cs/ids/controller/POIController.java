@@ -6,7 +6,6 @@ import it.unicam.cs.ids.services.POIService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,12 +17,12 @@ public class POIController {
     @Autowired
     private POIService poiService;
 
-    @GetMapping("/poi/comune")
-    public ResponseEntity<?> getAllPOIsOfComune(@RequestParam Long comuneId) {
+    @GetMapping("/comune/{comuneId}/poi")
+    public ResponseEntity<?> getAllPOIsOfComune(@PathVariable Long comuneId) {
         try {
             List<POI> poiList = poiService.getAllPOIsOfComune(comuneId);
             if (poiList.isEmpty()) {
-                return ResponseEntity.ok("Nessun POI trovato nel database.");
+                return ResponseEntity.ok("Nessun POI trovato per questo comune.");
             } else {
                 return ResponseEntity.ok(poiList);
             }
@@ -32,16 +31,15 @@ public class POIController {
         }
     }
 
-    @GetMapping("/poi")
-    public ResponseEntity<?> getPOIById(@RequestParam Long POIid) {
+    @GetMapping("/poi/{poiId}")
+    public ResponseEntity<?> getPOIById(@PathVariable Long poiId) {
         try {
-            return ResponseEntity.ok(poiService.read(POIid));
+            return ResponseEntity.ok(poiService.read(poiId));
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Si è verificato un errore: " + e.getMessage());
         }
     }
 
-    @Secured("TURISTA")
     @PostMapping("/api/poi")
     public ResponseEntity<?> createPOI(@RequestBody @Valid POIDto poiDto, BindingResult result) {
         if (result.hasErrors()) {

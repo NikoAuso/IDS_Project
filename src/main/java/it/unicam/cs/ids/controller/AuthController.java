@@ -12,14 +12,16 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 @Slf4j
 @RestController
-@RequestMapping()
 public class AuthController {
 
     @Autowired
@@ -31,11 +33,8 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestHeader("Authorization") String authHeader) {
         if (authHeader != null && authHeader.startsWith("Basic")) {
-            // Estrai le credenziali codificate in base64
             String base64Credentials = authHeader.substring("Basic".length()).trim();
-            // Decodifica le credenziali
             String credentials = new String(Base64.getDecoder().decode(base64Credentials), StandardCharsets.UTF_8);
-            // Le credenziali sono nel formato "username:password"
             final String[] values = credentials.split(":", 2);
 
             log.info("Login request: username={}, password={}", values[0], values[1]);
@@ -45,7 +44,7 @@ public class AuthController {
                     this.authenticationManager.authenticate(authenticationRequest);
             return ResponseEntity.ok(authenticationResponse);
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing or incorrect 'Authorization' header.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Header di autenticazione non valido.");
         }
     }
 

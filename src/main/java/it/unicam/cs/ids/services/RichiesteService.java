@@ -1,12 +1,10 @@
+/*
 package it.unicam.cs.ids.services;
 
 import it.unicam.cs.ids.enumeration.StatusRichieste;
 import it.unicam.cs.ids.enumeration.TipoRichiesta;
 import it.unicam.cs.ids.model.Users;
-import it.unicam.cs.ids.model.richieste.AvanzamentoRuolo;
-import it.unicam.cs.ids.model.richieste.PubblicazioneSocial;
 import it.unicam.cs.ids.model.richieste.Richieste;
-import it.unicam.cs.ids.model.richieste.Segnalazione;
 import it.unicam.cs.ids.repository.RichiesteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -128,7 +126,9 @@ public class RichiesteService {
         }
     }
 
-    /*// Logica aggiuntiva per interagire con AvanzamentoRuolo, PubblicazioneSocial, e Segnalazione
+    */
+/*//*
+/ Logica aggiuntiva per interagire con AvanzamentoRuolo, PubblicazioneSocialDto, e Segnalazione
     @Transactional
     public void avanzamentoRuolo(Long richiestaId, Users users) {
         AvanzamentoRuolo avanzamentoRuolo = new AvanzamentoRuolo();
@@ -140,7 +140,7 @@ public class RichiesteService {
 
     @Transactional
     public void pubblicazioneSocial(Long richiestaId, String contenuto, List<String> social) {
-        PubblicazioneSocial pubblicazioneSocial = new PubblicazioneSocial();
+        PubblicazioneSocialDto pubblicazioneSocial = new PubblicazioneSocialDto();
         pubblicazioneSocial.setRichiestaId(richiestaId);
         pubblicazioneSocial.setContenuto(contenuto);
         pubblicazioneSocial.setSocial(social);
@@ -154,7 +154,9 @@ public class RichiesteService {
         segnalazione.setMotivazione(motivazione);
         segnalazione.setStato("");
         segnalazioneRepository.save(segnalazione);
-        }*/
+        }*//*
+
 
 }
 
+*/

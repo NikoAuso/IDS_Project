@@ -9,26 +9,43 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/recensioni")
 public class RecensioneController {
 
     @Autowired
     private RecensioneService recensioneService;
 
-    @PostMapping("/create")
-    public ResponseEntity<Recensione> createRecensione(@RequestParam String commento,
-                                                       @RequestParam int voto,
-                                                       @RequestParam Long poiId,
-                                                       @RequestParam Long autoreId) {
-        Recensione newRecensione = recensioneService.create(commento, voto, poiId, autoreId);
-        return ResponseEntity.ok(newRecensione);
+    @GetMapping("/poi/{poiId}/recensioni")
+    public ResponseEntity<?> getAllRecensioniByPOI(@PathVariable Long poiId) {
+        try {
+            List<Recensione> recensioni = recensioneService.getAllRecensioniByPOI(poiId);
+            if (recensioni.isEmpty()) {
+                return ResponseEntity.ok("Nessuna recensione trovata per questo POI.");
+            } else {
+                return ResponseEntity.ok(recensioni);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Si è verificato un errore: " + e.getMessage());
+        }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Recensione> getRecensioneById(@PathVariable Long id) {
-        Recensione recensione = recensioneService.read(id);
-        return ResponseEntity.ok(recensione);
+    @GetMapping("/recensioni/{id}")
+    public ResponseEntity<?> getRecensioneById(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(recensioneService.read(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Si è verificato un errore: " + e.getMessage());
+        }
     }
+
+    @PostMapping("/api/recensioni")
+    public ResponseEntity<?> create(@RequestBody Recensione recensione) {
+        try {
+            return ResponseEntity.ok(recensioneService.create(recensione));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Si è verificato un errore: " + e.getMessage());
+        }
+    }
+
 
     @PutMapping("/update/{id}")
     public ResponseEntity<Recensione> updateRecensione(@PathVariable Long id,
@@ -44,9 +61,5 @@ public class RecensioneController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/poi/{poiId}")
-    public ResponseEntity<List<Recensione>> getAllRecensioniByPOI(@PathVariable Long poiId) {
-        List<Recensione> recensioni = recensioneService.getAllRecensioniByPOI(poiId);
-        return ResponseEntity.ok(recensioni);
-    }
+
 }

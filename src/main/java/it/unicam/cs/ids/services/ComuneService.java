@@ -25,6 +25,11 @@ public class ComuneService {
             throw new RuntimeException("il comune esiste già.");
         }
 
+        if (comuneRepository.findComuneByCuratore(
+                userRepository.findById(comuneDto.getCuratore())
+                        .orElseThrow(() -> new RuntimeException("il curatore selezionato non esiste"))).isPresent())
+            throw new RuntimeException("l'utente è già curatore di un comune.");
+
         Comune comune = new Comune(
                 comuneDto.getCap(),
                 comuneDto.getNome(),

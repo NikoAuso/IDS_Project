@@ -1,16 +1,12 @@
 package it.unicam.cs.ids.services;
 
-import it.unicam.cs.ids.dto.UserRegistrationDto;
-import it.unicam.cs.ids.model.Recensione;
 import it.unicam.cs.ids.model.POI.POI;
-import it.unicam.cs.ids.model.Users;
+import it.unicam.cs.ids.model.Recensione;
 import it.unicam.cs.ids.repository.RecensioneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class RecensioneService {
@@ -24,12 +20,14 @@ public class RecensioneService {
     @Autowired
     private UserService userService;
 
-    public Recensione create(String commento, int voto, Long poiId, Long autoreId) {
-        POI poi = poiService.read(poiId);
-        Users autore = userService.read(autoreId);
-
-        Recensione recensione = new Recensione(commento, voto, poi, autore);
-        return recensioneRepository.save(recensione);
+    public Recensione create(Recensione recensione) {
+        Recensione recensioneToCreate = new Recensione(
+                recensione.getCommento(),
+                recensione.getVoto(),
+                recensione.getPoi(),
+                recensione.getAutore()
+        );
+        return recensioneRepository.save(recensioneToCreate);
     }
 
     public Recensione read(Long id) {

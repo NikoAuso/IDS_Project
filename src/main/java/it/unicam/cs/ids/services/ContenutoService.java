@@ -36,7 +36,6 @@ public class ContenutoService {
                         .setPOI(poi)
                         .setTipo(contenutoDto.getTipo())
                         .setAutore(autore)
-                        .setValidato(contenutoDto.isValidato())
                         .setTitolo(contenutoDto.getTitolo())
                         .setDescrizione(contenutoDto.getDescrizione())
                         .setUrl(contenutoDto.getUrl())
@@ -50,7 +49,6 @@ public class ContenutoService {
                         .setPOI(poi)
                         .setTipo(contenutoDto.getTipo())
                         .setAutore(autore)
-                        .setValidato(contenutoDto.isValidato())
                         .setTitolo(contenutoDto.getTitolo())
                         .setDescrizione(contenutoDto.getDescrizione())
                         .setUrl(contenutoDto.getUrl())
@@ -64,15 +62,12 @@ public class ContenutoService {
 
     public Contenuto read(Long id) {
         return contenutoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Contenuto non trovato."));
+                .orElseThrow(() -> new RuntimeException("contenuto non trovato."));
     }
 
     public Contenuto update(Long id, ContenutoDto contenutoDto) {
         Contenuto contenuto = contenutoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Contenuto non trovato."));
-
-        POI poi = poiService.read(contenutoDto.getPoiId());
-        Users autore = userService.read(contenutoDto.getAutoreId());
+                .orElseThrow(() -> new RuntimeException("contenuto non trovato."));
 
         contenuto.setTitolo(contenutoDto.getTitolo());
         contenuto.setDescrizione(contenutoDto.getDescrizione());
@@ -80,7 +75,6 @@ public class ContenutoService {
         contenuto.setDataInizio(contenutoDto.getDataInizio());
         contenuto.setDataFine(contenutoDto.getDataFine());
         contenuto.setNote(contenutoDto.getNote());
-        contenuto.setValidato(contenutoDto.isValidato());
 
         contenutoRepository.save(contenuto);
         return contenuto;
@@ -95,6 +89,4 @@ public class ContenutoService {
         POI poi = poiService.read(poiId);
         return contenutoRepository.findContenutoByPoi(poi);
     }
-
-
 }

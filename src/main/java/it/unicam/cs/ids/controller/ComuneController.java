@@ -20,8 +20,8 @@ public class ComuneController {
 
     @GetMapping("/comune/all")
     public ResponseEntity<?> getAllComuni() {
-        List<Comune> comuni = comuneService.read();
         try {
+            List<Comune> comuni = comuneService.read();
             if (comuni.isEmpty()) {
                 return ResponseEntity.ok("Nessun comune trovato nel database.");
             } else {
@@ -32,10 +32,19 @@ public class ComuneController {
         }
     }
 
-    @GetMapping("/comune/{id}")
-    public ResponseEntity<?> getComuneById(@PathVariable Long id) {
+    @GetMapping("/comune/id/{idComune}")
+    public ResponseEntity<?> getComuneById(@PathVariable Long idComune) {
         try {
-            return ResponseEntity.ok(comuneService.read(id));
+            return ResponseEntity.ok(comuneService.read(idComune));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Si è verificato un errore: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/comune/nome/{nomeComune}")
+    public ResponseEntity<?> getComuneByNome(@PathVariable String nomeComune) {
+        try {
+            return ResponseEntity.ok(comuneService.read(nomeComune));
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Si è verificato un errore: " + e.getMessage());
         }

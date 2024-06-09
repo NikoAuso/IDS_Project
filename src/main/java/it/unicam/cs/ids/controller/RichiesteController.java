@@ -1,3 +1,4 @@
+/*
 package it.unicam.cs.ids.controller;
 
 import it.unicam.cs.ids.model.Users;
@@ -36,3 +37,4 @@ public class RichiesteController {
     }
 
 }
+*/
