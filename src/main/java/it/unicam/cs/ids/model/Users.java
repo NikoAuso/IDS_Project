@@ -1,5 +1,7 @@
 package it.unicam.cs.ids.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import it.unicam.cs.ids.enumeration.TipoRuolo;
 import it.unicam.cs.ids.model.POI.POI;
 import jakarta.persistence.*;
@@ -35,6 +37,7 @@ public class Users implements UserDetails {
     @Column(nullable = false, unique = true)
     private String username;
 
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
 
@@ -53,6 +56,7 @@ public class Users implements UserDetails {
             joinColumns = @JoinColumn(name = "userId"),
             inverseJoinColumns = @JoinColumn(name = "poiId")
     )
+    @JsonIdentityReference
     private List<POI> preferiti;
 
     /**
@@ -64,26 +68,31 @@ public class Users implements UserDetails {
             joinColumns = @JoinColumn(name = "userId"),
             inverseJoinColumns = @JoinColumn(name = "contestId")
     )
+    @JsonIdentityReference
     private List<Contest> partecipazioneContest;
 
     /**
      * Lista degli itinerari creati dall'utente
      */
     @OneToMany(mappedBy = "itinerarioId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @JsonIdentityReference
     private List<Itinerario> itinerari;
 
     /**
      * Lista delle recensioni scritte dall'utente
      */
     @OneToMany(mappedBy = "recensioneId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @JsonIdentityReference
     private List<Recensione> recensione;
 
     @CreationTimestamp
     @Column(updatable = false, name = "createdAt")
+    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updatedAt")
+    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime updatedAt;
 
     public Users(String nome, String cognome, String email, String username, String password) {

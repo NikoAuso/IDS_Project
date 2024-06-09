@@ -33,10 +33,12 @@ public class Recensione {
 
     @CreationTimestamp
     @Column(updatable = false, name = "createdAt")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
     @UpdateTimestamp
     @Column(name = "updatedAt")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
 
     public Recensione(String commento, int voto, POI poi, Users autore) {

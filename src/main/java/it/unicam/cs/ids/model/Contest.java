@@ -1,5 +1,6 @@
 package it.unicam.cs.ids.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import it.unicam.cs.ids.model.POI.contenuto.ContenutoContest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -37,6 +38,7 @@ public class Contest {
     private Users animatore;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIdentityReference
     private List<ContenutoContest> contenuti;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -45,17 +47,22 @@ public class Contest {
             joinColumns = @JoinColumn(name = "contestId"),
             inverseJoinColumns = @JoinColumn(name = "userId")
     )
-    private List<Users> utenti;
+    @JsonIdentityReference
+    private List<Users> utentiPartecipanti;
 
-
+    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime dataInizio;
+
+    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime dataFine;
 
     @CreationTimestamp
     @Column(name = "createdAt", updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updatedAt")
+    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime updatedAt;
 }

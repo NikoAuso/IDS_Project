@@ -4,6 +4,8 @@ import it.unicam.cs.ids.dto.UserRegistrationDto;
 import it.unicam.cs.ids.model.Users;
 import it.unicam.cs.ids.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,6 +17,9 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private POIService poiService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -64,5 +69,20 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("utente non trovato."));
+    }
+
+    public Users addPOIToPreferiti(Long poiId, Long userId) {
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("utente non trovato."));
+
+        user.getPreferiti().add(poiService.read(poiId));
+
+        return userRepository.save(user);
+
+    }
+
+    public Long getAuthenticatedUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return ((Users) authentication.getPrincipal()).getUserId();
     }
 }

@@ -1,24 +1,26 @@
 package it.unicam.cs.ids.dto;
 
+import it.unicam.cs.ids.enumeration.TipoCategoriaContenuto;
 import it.unicam.cs.ids.enumeration.TipoContenuto;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
 public class ContenutoDto {
-    @NotEmpty(message = "Il campo poiId non può essere vuoto.")
+    @NotNull(message = "Il campo poi non può essere vuoto.")
     private Long poiId;
 
     @NotEmpty(message = "Il campo tipo non può essere vuoto.")
     private TipoContenuto tipo;
 
-    @NotEmpty(message = "Il campo autoreId non può essere vuoto.")
-    private Long autoreId;
+    @NotEmpty(message = "Il campo tipo non può essere vuoto.")
+    private TipoCategoriaContenuto categoria;
 
-    @NotEmpty(message = "Il campo validato non può essere vuoto.")
-    private boolean validato;
+    @NotEmpty(message = "Il campo autore non può essere vuoto.")
+    private Long autoreId;
 
     @NotEmpty(message = "Il campo titolo non può essere vuoto.")
     private String titolo;

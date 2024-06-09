@@ -1,5 +1,7 @@
 package it.unicam.cs.ids.model.POI.contenuto;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import it.unicam.cs.ids.enumeration.TipoCategoriaContenuto;
 import it.unicam.cs.ids.enumeration.TipoContenuto;
 import it.unicam.cs.ids.model.POI.POI;
@@ -29,53 +31,83 @@ public class Contenuto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long contenutoId;
 
+    /**
+     * POI a cui è associato il contenuto
+     */
     @ManyToOne
     @JoinColumn(name = "poi", nullable = false)
+    @JsonManagedReference
     private POI poi;
 
+    /**
+     * Tipo di contenuto
+     */
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private TipoContenuto tipo;
 
+    /**
+     * Categoria del contenuto
+     */
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private TipoCategoriaContenuto categoria;
 
+    /**
+     * Autore del contenuto
+     */
     @ManyToOne
     @JoinColumn(name = "autore", nullable = false)
+    @JsonIdentityReference
     private Users autore;
 
+    /**
+     * Indica se il contenuto è stato validato
+     */
     @Column(nullable = false)
     private boolean validato;
 
+    /**
+     * Titolo del contenuto
+     */
     @Column(nullable = false)
     private String titolo;
 
+    /**
+     * Descrizione del contenuto
+     */
     @Column(nullable = false)
     private String descrizione;
 
     // Campi aggiuntivi per altri tipi di contenuto
     private String url;
+
+    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime dataInizio;
+
+    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime dataFine;
+
     private String note;
 
     @OneToMany(mappedBy = "segnalazioneId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @JsonIdentityReference
     private List<Segnalazione> segnalazioni;
 
     @CreationTimestamp
     @Column(name = "createdAt", updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updatedAt")
+    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime updatedAt;
-
 
     public static class Builder {
         private POI poi;
         private TipoContenuto tipo;
-         private TipoCategoriaContenuto categoria;
+        private TipoCategoriaContenuto categoria;
         private Users autore;
         private boolean validato;
         private String titolo;

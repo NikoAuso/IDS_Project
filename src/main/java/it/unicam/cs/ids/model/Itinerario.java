@@ -1,11 +1,15 @@
 package it.unicam.cs.ids.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import it.unicam.cs.ids.model.POI.POI;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -32,14 +36,26 @@ public class Itinerario {
             joinColumns = @JoinColumn(name = "itinerarioId"),
             inverseJoinColumns = @JoinColumn(name = "poiId")
     )
+    @JsonIdentityReference
     private List<POI> percorso;
 
     @OneToMany(mappedBy = "materialeId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @JsonIdentityReference
     private List<MaterialeMultimediale> materialiMultimediali;
 
     @ManyToOne
     @JoinColumn(name = "autore", nullable = false)
     private Users autore;
+
+    @CreationTimestamp
+    @Column(updatable = false, name = "createdAt")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updatedAt")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
 
     public Itinerario(String nome, String descrizione, String distanza, List<POI> percorso, List<MaterialeMultimediale> materialiMultimediali, Users autore){
         this.nome = nome;

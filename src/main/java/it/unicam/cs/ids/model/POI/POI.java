@@ -1,5 +1,7 @@
 package it.unicam.cs.ids.model.POI;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import it.unicam.cs.ids.enumeration.TipoPOI;
 import it.unicam.cs.ids.model.Comune;
 import it.unicam.cs.ids.model.Itinerario;
@@ -9,7 +11,10 @@ import it.unicam.cs.ids.model.Users;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -42,6 +47,7 @@ public abstract class POI {
      */
     @ManyToOne
     @JoinColumn(name = "comune", nullable = false)
+    @JsonManagedReference
     private Comune comune;
 
     /**
@@ -53,12 +59,14 @@ public abstract class POI {
             joinColumns = @JoinColumn(name = "poiId"),
             inverseJoinColumns = @JoinColumn(name = "userId")
     )
+    @JsonIdentityReference
     private List<Users> users;
 
     /**
      * Lista dei contenuti associati al POI
      */
     @OneToMany(mappedBy = "contenutoId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @JsonIdentityReference
     private List<Contenuto> contenuti;
 
     /**
@@ -70,10 +78,22 @@ public abstract class POI {
             joinColumns = @JoinColumn(name = "poiId"),
             inverseJoinColumns = @JoinColumn(name = "itinerarioId")
     )
+    @JsonIdentityReference
     private List<Itinerario> itinerari;
 
     @OneToMany(mappedBy = "recensioneId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @JsonIdentityReference
     private List<Recensione> recensioni;
+
+    @CreationTimestamp
+    @Column(updatable = false, name = "createdAt")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updatedAt")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
 
     public POI() {
     }

@@ -35,10 +35,12 @@ public class AvanzamentoRuolo implements Richieste{
 
     @CreationTimestamp
     @Column(name = "createdAt", updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updatedAt")
+    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime updatedAt;
 
 

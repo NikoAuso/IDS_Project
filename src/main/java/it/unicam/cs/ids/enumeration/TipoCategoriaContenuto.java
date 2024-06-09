@@ -5,7 +5,6 @@ public enum TipoCategoriaContenuto {
     SPORTIVO,
     CULTURALE,
     EVENTO,
-
     GASTRONOMICO,
     STORICO,
     NATURALE,
