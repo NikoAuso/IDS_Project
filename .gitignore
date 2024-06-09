@@ -71,5 +71,3 @@ replay_pid*
 
 # Ignore Gradle build output directory
 build
-
-resources/application_properties_1
