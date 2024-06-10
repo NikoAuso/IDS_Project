@@ -1,6 +1,6 @@
 package it.unicam.cs.ids.enumeration;
 
-public enum TipoCategorieFisico {
+public enum TipoCategoriePOIFisico {
     MUSEO,
     PARCO,
     RISTORANTE,

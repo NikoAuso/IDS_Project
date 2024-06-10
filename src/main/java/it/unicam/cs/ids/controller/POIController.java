@@ -52,4 +52,35 @@ public class POIController {
             return ResponseEntity.status(500).body("Si è verificato un errore: " + e.getMessage());
         }
     }
+
+    @PutMapping("/api/poi/{id}")
+    public ResponseEntity<?> updatePOI(@RequestBody @Valid POIDto poiDto, @PathVariable Long id, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body("Si sono verificati errori di validazione: " + result.getAllErrors());
+        }
+
+        try {
+            return ResponseEntity.ok(poiService.update(id, poiDto));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Si è verificato un errore: " + e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/api/poi/{id}")
+    public ResponseEntity<?> deletePOI(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(poiService.delete(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Si è verificato un errore: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/api/poi/{poiId}/validate")
+    public ResponseEntity<?> validatePOI(@PathVariable Long poiId) {
+        try {
+            return ResponseEntity.ok(poiService.validate(poiId));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Si è verificato un errore: " + e.getMessage());
+        }
+    }
 }

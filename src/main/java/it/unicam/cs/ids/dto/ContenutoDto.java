@@ -14,12 +14,12 @@ public class ContenutoDto {
     private Long poiId;
 
     @NotEmpty(message = "Il campo tipo non può essere vuoto.")
-    private TipoContenuto tipo;
+    private String tipo;
 
     @NotEmpty(message = "Il campo tipo non può essere vuoto.")
-    private TipoCategoriaContenuto categoria;
+    private String categoria;
 
-    @NotEmpty(message = "Il campo autore non può essere vuoto.")
+    @NotNull(message = "Il campo autore non può essere vuoto.")
     private Long autoreId;
 
     @NotEmpty(message = "Il campo titolo non può essere vuoto.")

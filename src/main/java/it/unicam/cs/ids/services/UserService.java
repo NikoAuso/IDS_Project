@@ -2,6 +2,7 @@ package it.unicam.cs.ids.services;
 
 import it.unicam.cs.ids.dto.UserRegistrationDto;
 import it.unicam.cs.ids.model.Users;
+import it.unicam.cs.ids.repository.POIRepository;
 import it.unicam.cs.ids.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -12,6 +13,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService implements UserDetailsService {
 
@@ -19,7 +22,7 @@ public class UserService implements UserDetailsService {
     private UserRepository userRepository;
 
     @Autowired
-    private POIService poiService;
+    private POIRepository poiRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -42,6 +45,10 @@ public class UserService implements UserDetailsService {
         );
 
         return userRepository.save(user);
+    }
+
+    public List<Users> read() {
+        return userRepository.findAll();
     }
 
     public Users read(Long id) {
@@ -71,18 +78,16 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("utente non trovato."));
     }
 
-    public Users addPOIToPreferiti(Long poiId, Long userId) {
-        Users user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("utente non trovato."));
-
-        user.getPreferiti().add(poiService.read(poiId));
-
+    public Users addPOIToPreferiti(Long poiId, Users user) {
+        user.getPreferiti().add(
+                poiRepository.findById(poiId)
+                        .orElseThrow(() -> new RuntimeException("POI non trovato."))
+        );
         return userRepository.save(user);
-
     }
 
-    public Long getAuthenticatedUserId() {
+    public Users getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return ((Users) authentication.getPrincipal()).getUserId();
+        return (Users) authentication.getPrincipal();
     }
 }

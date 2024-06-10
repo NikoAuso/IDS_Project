@@ -2,6 +2,7 @@ package it.unicam.cs.ids.services;
 
 import it.unicam.cs.ids.model.POI.POI;
 import it.unicam.cs.ids.model.Recensione;
+import it.unicam.cs.ids.repository.POIRepository;
 import it.unicam.cs.ids.repository.RecensioneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ public class RecensioneService {
     private RecensioneRepository recensioneRepository;
 
     @Autowired
-    private POIService poiService;
+    private POIRepository poiRepository;
 
     @Autowired
     private UserService userService;
@@ -32,12 +33,12 @@ public class RecensioneService {
 
     public Recensione read(Long id) {
         return recensioneRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Recensione non trovata."));
+                .orElseThrow(() -> new RuntimeException("recensione non trovata."));
     }
 
     public Recensione update(Long id, String commento, int voto) {
         Recensione recensione = recensioneRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Recensione non trovata"));
+                .orElseThrow(() -> new RuntimeException("recensione non trovata"));
 
         recensione.setCommento(commento);
         recensione.setVoto(voto);
@@ -49,12 +50,13 @@ public class RecensioneService {
         if (recensioneRepository.existsById(id)) {
             recensioneRepository.deleteById(id);
         } else {
-            throw new RuntimeException("Recensione non trovata.");
+            throw new RuntimeException("recensione non trovata.");
         }
     }
 
     public List<Recensione> getAllRecensioniByPOI(Long poiId) {
-        POI poi = poiService.read(poiId);
+        POI poi = poiRepository.findById(poiId)
+                .orElseThrow(() -> new RuntimeException("POI non trovato."));
         return recensioneRepository.findRecensioniByPoi(poi);
     }
 }

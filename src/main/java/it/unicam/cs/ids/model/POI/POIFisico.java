@@ -1,6 +1,6 @@
 package it.unicam.cs.ids.model.POI;
 
-import it.unicam.cs.ids.enumeration.TipoCategorieFisico;
+import it.unicam.cs.ids.enumeration.TipoCategoriePOIFisico;
 import it.unicam.cs.ids.enumeration.TipoPOI;
 import it.unicam.cs.ids.model.Comune;
 import jakarta.persistence.*;
@@ -29,9 +29,9 @@ public class POIFisico extends POI {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TipoCategorieFisico categoria;
+    private TipoCategoriePOIFisico categoria;
 
-    public POIFisico(String nome, String descrizione, Comune comune, double longitudine, double latitudine, String indirizzo, LocalTime orariDiApertura, LocalTime orariDiChiusura, String serviziDisponibili, String sitoWeb, String contatti, @NotNull TipoCategorieFisico categoria) {
+    public POIFisico(String nome, String descrizione, Comune comune, double longitudine, double latitudine, String indirizzo, LocalTime orariDiApertura, LocalTime orariDiChiusura, String serviziDisponibili, String sitoWeb, String contatti, @NotNull TipoCategoriePOIFisico categoria) {
         super(nome, descrizione, comune, longitudine, latitudine);
 
         this.indirizzo = indirizzo;

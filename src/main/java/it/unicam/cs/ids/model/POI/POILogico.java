@@ -1,6 +1,6 @@
 package it.unicam.cs.ids.model.POI;
 
-import it.unicam.cs.ids.enumeration.TipoCategorieLogico;
+import it.unicam.cs.ids.enumeration.TipoCategoriePOILogico;
 import it.unicam.cs.ids.enumeration.TipoPOI;
 import it.unicam.cs.ids.model.Comune;
 import jakarta.persistence.*;
@@ -22,9 +22,9 @@ public class POILogico extends POI{
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TipoCategorieLogico categoria;
+    private TipoCategoriePOILogico categoria;
 
-    public POILogico(String nome, String descrizione, Comune comune, double longitudine, double latitudine, String informazioniStoriche, String area, TipoCategorieLogico categoria) {
+    public POILogico(String nome, String descrizione, Comune comune, double longitudine, double latitudine, String informazioniStoriche, String area, TipoCategoriePOILogico categoria) {
         super(nome, descrizione, comune, longitudine, latitudine);
 
         this.informazioniStoriche = informazioniStoriche;

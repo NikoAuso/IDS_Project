@@ -2,6 +2,7 @@ package it.unicam.cs.ids.enumeration;
 
 public enum TipoRichiesta {
     AVANZAMENTO_RUOLO,
-    PUBBLICAZIONE_SOCIAL,
     SEGNALAZIONE_CONTENUTO,
+    ACCREDITAMENTO_CURATORE,
+    MODIFICA_CONTENUTO,
 }

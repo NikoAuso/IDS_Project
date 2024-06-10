@@ -2,7 +2,7 @@ package it.unicam.cs.ids.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import it.unicam.cs.ids.enumeration.TipoRuolo;
+import it.unicam.cs.ids.enumeration.Ruoli;
 import it.unicam.cs.ids.model.POI.POI;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -45,7 +45,7 @@ public class Users implements UserDetails {
     private Boolean autorizzato;
 
     @Enumerated(EnumType.STRING)
-    private TipoRuolo ruolo;
+    private Ruoli ruolo;
 
     /**
      * Lista dei POI preferiti dall'utente
@@ -102,7 +102,7 @@ public class Users implements UserDetails {
         this.username = username;
         this.password = password;
         this.autorizzato = false;
-        this.ruolo = TipoRuolo.TURISTA;
+        this.ruolo = Ruoli.TURISTA;
     }
 
     @Override

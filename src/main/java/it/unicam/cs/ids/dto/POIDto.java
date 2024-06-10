@@ -1,7 +1,7 @@
 package it.unicam.cs.ids.dto;
 
-import it.unicam.cs.ids.enumeration.TipoCategorieFisico;
-import it.unicam.cs.ids.enumeration.TipoCategorieLogico;
+import it.unicam.cs.ids.enumeration.TipoCategoriePOIFisico;
+import it.unicam.cs.ids.enumeration.TipoCategoriePOILogico;
 import it.unicam.cs.ids.enumeration.TipoPOI;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotEmpty;
@@ -37,10 +37,10 @@ public class POIDto {
     private String serviziDisponibili;
     private String sitoWeb;
     private String contatti;
-    private TipoCategorieFisico categoriaFisico;
+    private TipoCategoriePOIFisico categoriaFisico;
 
     // Campi specifici per i POI logici
     private String informazioniStoriche;
     private String area;
-    private TipoCategorieLogico categoriaLogico;
+    private TipoCategoriePOILogico categoriaLogico;
 }

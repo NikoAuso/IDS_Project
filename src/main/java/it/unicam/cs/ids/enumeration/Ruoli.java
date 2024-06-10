@@ -2,7 +2,7 @@ package it.unicam.cs.ids.enumeration;
 
 import org.springframework.security.core.GrantedAuthority;
 
-public enum TipoRuolo implements GrantedAuthority {
+public enum Ruoli implements GrantedAuthority {
     TURISTA,
     CONTRIBUTOR,
     CURATORE,

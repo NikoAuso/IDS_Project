@@ -8,6 +8,7 @@ import it.unicam.cs.ids.services.SocialService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,8 +24,8 @@ public class ContenutoController {
 
     @GetMapping("/poi/{poiId}/contenuti")
     public ResponseEntity<?> getAllContenutiByPOI(@PathVariable Long poiId) {
-        List<Contenuto> contenuti = contenutoService.getAllContenutiByPOI(poiId);
         try {
+            List<Contenuto> contenuti = contenutoService.getAllContenutiByPOI(poiId);
             if (contenuti.isEmpty()) {
                 return ResponseEntity.ok("Nessun contenuto trovato nel database.");
             } else {
@@ -44,23 +45,42 @@ public class ContenutoController {
         }
     }
 
-    //TODO: implementare la sicurezza
-    @PostMapping("/api/contenuti/create")
+    @PreAuthorize("hasAnyAuthority('CONTRIBUTOR', 'CURATORE')")
+    @PostMapping("/api/contenuti")
     public ResponseEntity<?> createContenuto(@RequestBody @Valid ContenutoDto contenutoDto) {
-        Contenuto newContenuto = contenutoService.create(contenutoDto);
-        return ResponseEntity.ok(newContenuto);
+        try {
+            return ResponseEntity.ok(contenutoService.create(contenutoDto));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Si è verificato un errore: " + e.getMessage());
+        }
     }
 
-    @PutMapping("/api/contenuti/update/{id}")
+    @PutMapping("/api/contenuti/{id}")
     public ResponseEntity<?> updateContenuto(@PathVariable Long id, @RequestBody ContenutoDto contenutoDto) {
-        Contenuto updatedContenuto = contenutoService.update(id, contenutoDto);
-        return ResponseEntity.ok(updatedContenuto);
+        try {
+            return ResponseEntity.ok(contenutoService.update(id, contenutoDto));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Si è verificato un errore: " + e.getMessage());
+        }
     }
 
-    @DeleteMapping("/api/contenuti/delete/{id}")
+    @DeleteMapping("/api/contenuti/{id}")
     public ResponseEntity<?> deleteContenuto(@PathVariable Long id) {
-        contenutoService.delete(id);
-        return ResponseEntity.noContent().build();
+        try {
+            contenutoService.delete(id);
+            return ResponseEntity.ok("Contenuto eliminato con successo.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Si è verificato un errore: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/api/contenuti/{id}/validate")
+    public ResponseEntity<?> validateContenuto(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(contenutoService.validate(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Si è verificato un errore: " + e.getMessage());
+        }
     }
 
     @PutMapping("/api/contenuti/publish")
@@ -70,7 +90,7 @@ public class ContenutoController {
                 .filter(Contenuto::isValidato)
                 .toList();
 
-        if (contenuti.contains(null)) {
+        if (contenuti.isEmpty()) {
             return ResponseEntity.status(500).body("Si è verificato un errore: uno o più contenuti non esistono o non sono stati validati.");
         }
 

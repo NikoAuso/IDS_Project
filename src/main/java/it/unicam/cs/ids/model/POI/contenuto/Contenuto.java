@@ -90,7 +90,7 @@ public class Contenuto {
 
     private String note;
 
-    @OneToMany(mappedBy = "segnalazioneId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "richiestaId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JsonIdentityReference
     private List<Segnalazione> segnalazioni;
 
