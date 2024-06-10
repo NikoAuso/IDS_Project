@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -29,6 +29,12 @@ public class Itinerario {
 
     @Column(nullable = false)
     private String distanza;
+
+    @Column(nullable = false)
+    private String durata;
+
+    @Column(nullable = false)
+    private boolean validato;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
@@ -50,17 +56,18 @@ public class Itinerario {
     @CreationTimestamp
     @Column(updatable = false, name = "createdAt")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updatedAt")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 
-    public Itinerario(String nome, String descrizione, String distanza, List<POI> percorso, List<MaterialeMultimediale> materialiMultimediali, Users autore){
+    public Itinerario(String nome, String descrizione, String distanza, String durata, List<POI> percorso, List<MaterialeMultimediale> materialiMultimediali, Users autore){
         this.nome = nome;
         this.descrizione = descrizione;
         this.distanza = distanza;
+        this.durata = durata;
         this.percorso = percorso;
         this.materialiMultimediali = materialiMultimediali;
         this.autore = autore;

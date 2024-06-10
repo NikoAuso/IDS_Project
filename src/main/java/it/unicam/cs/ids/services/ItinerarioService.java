@@ -1,13 +1,16 @@
 package it.unicam.cs.ids.services;
 
 import it.unicam.cs.ids.dto.ItinerarioDto;
+import it.unicam.cs.ids.dto.MaterialeMultimedialeDto;
 import it.unicam.cs.ids.model.Comune;
 import it.unicam.cs.ids.model.Itinerario;
+import it.unicam.cs.ids.model.MaterialeMultimediale;
 import it.unicam.cs.ids.model.POI.POI;
 import it.unicam.cs.ids.model.Users;
 import it.unicam.cs.ids.observer.ObserverImpl;
 import it.unicam.cs.ids.observer.Publisher;
 import it.unicam.cs.ids.repository.ItinerarioRepository;
+import it.unicam.cs.ids.repository.MaterialeMultimedialeRepository;
 import it.unicam.cs.ids.repository.POIRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +26,12 @@ public class ItinerarioService extends Publisher {
     @Autowired
     private POIRepository poiRepository;
 
+    @Autowired
+    private MaterialeMultimedialeRepository materialeMultimedialeRepository;
+
     private final ObserverImpl observer = new ObserverImpl();
+    @Autowired
+    private UserService userService;
 
     public Itinerario create(ItinerarioDto itinerarioDto) {
         addObserver(observer);
@@ -32,12 +40,16 @@ public class ItinerarioService extends Publisher {
             throw new RuntimeException("l'itinerario esiste già.");
         }
 
+        if (itinerarioDto.getPercorso().size() >= 2)
+            throw new RuntimeException("l'itinerario deve avere almeno due punti di interesse.");
+
         checkComunePOI(itinerarioDto);
 
         Itinerario itinerario = new Itinerario(
                 itinerarioDto.getNome(),
                 itinerarioDto.getDescrizione(),
                 itinerarioDto.getDistanza(),
+                itinerarioDto.getDurata(),
                 itinerarioDto.getPercorso(),
                 itinerarioDto.getMaterialiMultimediali(),
                 itinerarioDto.getAutore()
@@ -85,37 +97,56 @@ public class ItinerarioService extends Publisher {
         return itinerarioRepository.findById(itinerarioId).map(i -> {
                     List<POI> percorso = i.getPercorso();
                     POI poi = poiRepository.findById(poiId)
-                            .orElseThrow(()-> new RuntimeException("POI non trovato"));
+                            .orElseThrow(() -> new RuntimeException("POI non trovato"));
                     percorso.add(poi);
                     i.setPercorso(percorso);
                     return itinerarioRepository.save(i);
-        })
-                .orElseThrow(() -> new RuntimeException("Itinerario non trovato!"));
+                })
+                .orElseThrow(() -> new RuntimeException("itinerario non trovato!"));
     }
 
     public Itinerario removePointOfInterest(Long itinerarioId, Long poiId) {
         return itinerarioRepository.findById(itinerarioId).map(i -> {
                     List<POI> percorso = i.getPercorso();
                     POI poiToRemove = poiRepository.findById(poiId)
-                            .orElseThrow(()-> new RuntimeException("POI non trovato"));
-                    if(percorso.contains(poiToRemove)) {
-                        percorso.remove(poiToRemove);
-                        i.setPercorso(percorso);
-                        return itinerarioRepository.save(i);
-                    }else
-                        throw new RuntimeException("POI non trovato nell'itinerario.");
-
-                })
-                .orElseThrow(() -> new RuntimeException("Itinerario non trovato!"));
+                            .orElseThrow(() -> new RuntimeException("POI non trovato"));
+            if (percorso.contains(poiToRemove)) {
+                percorso.remove(poiToRemove);
+                i.setPercorso(percorso);
+                return itinerarioRepository.save(i);
+            } else
+                throw new RuntimeException("POI non trovato nell'itinerario.");
+        }).orElseThrow(() -> new RuntimeException("itinerario non trovato"));
     }
 
-    private boolean checkComunePOI(ItinerarioDto itinerarioDto){
+    public Itinerario addMaterialeMultimediale(Long itinerarioId, MaterialeMultimedialeDto materialeMultimedialeDto) {
+        return itinerarioRepository.findById(itinerarioId).map(i -> {
+            MaterialeMultimediale materialeMultimediale = new MaterialeMultimediale(
+                    materialeMultimedialeDto.getTipo(),
+                    i,
+                    materialeMultimedialeDto.getFiles()
+            );
+            materialeMultimedialeRepository.save(materialeMultimediale);
+            List<MaterialeMultimediale> materialiMultimediali = i.getMaterialiMultimediali();
+            materialiMultimediali.add(materialeMultimediale);
+            i.setMaterialiMultimediali(materialiMultimediali);
+            return itinerarioRepository.save(i);
+        }).orElseThrow(() -> new RuntimeException("itinerario non trovato"));
+    }
+
+    public Itinerario validateItinerario(Long itinerarioId) {
+        return itinerarioRepository.findById(itinerarioId).map(i -> {
+            i.setValidato(true);
+            return itinerarioRepository.save(i);
+        }).orElseThrow(() -> new RuntimeException("itinerario non trovato."));
+    }
+
+    private void checkComunePOI(ItinerarioDto itinerarioDto) {
         Comune comune = itinerarioDto.getPercorso().getFirst().getComune();
         for (POI poi : itinerarioDto.getPercorso()) {
             if (poi.getComune() != comune)
-                throw new RuntimeException("i POI che compongono l'itinerario devono appartenere alla stesso comune");
+                throw new RuntimeException("I POI che compongono l'itinerario devono appartenere alla stesso comune");
         }
-        return true;
     }
 }
 

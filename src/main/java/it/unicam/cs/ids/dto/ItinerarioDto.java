@@ -23,6 +23,9 @@ public class ItinerarioDto {
     @NotEmpty(message = "La distanza è richiesta")
     private String distanza;
 
+    @NotEmpty(message = "La durata è richiesta")
+    private String durata;
+
     @NotEmpty(message = "Il percorso è richiesto")
     private List<POI> percorso;
 

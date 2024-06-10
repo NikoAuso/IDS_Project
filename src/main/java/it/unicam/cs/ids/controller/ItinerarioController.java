@@ -1,11 +1,13 @@
 package it.unicam.cs.ids.controller;
 
 import it.unicam.cs.ids.dto.ItinerarioDto;
+import it.unicam.cs.ids.dto.MaterialeMultimedialeDto;
 import it.unicam.cs.ids.model.Itinerario;
 import it.unicam.cs.ids.services.ItinerarioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,6 +41,7 @@ public class ItinerarioController {
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('CONTRIBUTOR', 'CURATORE')")
     @PostMapping("/api/itinerari")
     public ResponseEntity<?> createItinerario(@RequestBody @Valid ItinerarioDto itinerarioDto, BindingResult result) {
         if (result.hasErrors()) {
@@ -70,27 +73,40 @@ public class ItinerarioController {
         try {
             itinerarioService.delete(id);
             return ResponseEntity.ok("Comune eliminato con successo.");
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             return ResponseEntity.status(500).body("Si è verificato un errore: " + e.getMessage());
         }
     }
 
     @PostMapping("/api/itinerari/{itinerarioId}/{poiId}")
-    public ResponseEntity<Void> addPOI(@PathVariable Long itinerarioId, @PathVariable Long poiId) {
+    public ResponseEntity<?> addPOI(@PathVariable Long itinerarioId, @PathVariable Long poiId) {
         try {
-            itinerarioService.addPointOfInterest(itinerarioId, poiId);
-            return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e) {
+            return ResponseEntity.ok(itinerarioService.addPointOfInterest(itinerarioId, poiId));
+        } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @DeleteMapping("/api/itinerari/{itinerarioId}/{poiId}")
-    public ResponseEntity<Void> removePOI(@PathVariable Long itinerarioId, @PathVariable Long poiId) {
+    public ResponseEntity<?> removePOI(@PathVariable Long itinerarioId, @PathVariable Long poiId) {
         try {
-            itinerarioService.removePointOfInterest(itinerarioId, poiId);
-            return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e) {
+            return ResponseEntity.ok(itinerarioService.removePointOfInterest(itinerarioId, poiId));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/api/itinerari/{itinerarioId}/add")
+    public ResponseEntity<?> addMaterialeMultimediale(@PathVariable Long itinerarioId,
+                                                      @RequestBody @Valid MaterialeMultimedialeDto materialeMultimedialeDto,
+                                                      BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body("Si sono verificati errori di validazione: " + result.getAllErrors());
+        }
+
+        try {
+            return ResponseEntity.ok(itinerarioService.addMaterialeMultimediale(itinerarioId, materialeMultimedialeDto));
+        } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }

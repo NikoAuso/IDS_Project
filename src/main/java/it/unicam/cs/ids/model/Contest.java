@@ -33,6 +33,8 @@ public class Contest {
     @Column(nullable = false)
     private Boolean aperto;
 
+    private String linkInvito;
+
     @ManyToOne
     @JoinColumn(name = "animatore")
     private Users animatore;
@@ -65,4 +67,14 @@ public class Contest {
     @Column(name = "updatedAt")
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime updatedAt;
+
+    public Contest(String nome, String descrizione, String tema, Boolean aperto, Users animatore, LocalDateTime dataInizio, LocalDateTime dataFine) {
+        this.nome = nome;
+        this.descrizione = descrizione;
+        this.tema = tema;
+        this.aperto = aperto;
+        this.animatore = animatore;
+        this.dataInizio = dataInizio;
+        this.dataFine = dataFine;
+    }
 }
