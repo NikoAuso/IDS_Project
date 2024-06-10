@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -18,30 +19,56 @@ import java.time.LocalDateTime;
 public class Segnalazione implements Richieste {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long segnalazioneId;
+    private Long richiestaId;
 
+    /**
+     * Lo stato della richiesta di segnalazione
+     */
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private StatusRichieste statoSegnalazione;
+
+    /**
+     * La motivazione dell'eventuale rifiuto della richiesta
+     */
+    @Column(nullable = false)
+    private String motivazione;
+
+    /**
+     * Il contenuto segnalato
+     */
     @ManyToOne
     @JoinColumn(name = "contenutoId", nullable = false)
     private Contenuto contenuto;
 
+    /**
+     * Il commento della segnalazione
+     */
     @Column(nullable = false)
-    private String dettagli;
+    private String commento;
 
-    private String motivazione;
-
+    /**
+     * L'autore della segnalazione
+     */
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false)
     private Users autore;
 
-    @Column(nullable = false)
-    private StatusRichieste statoSegnalazione;
+    @CreationTimestamp
+    @Column(updatable = false, name = "createdAt")
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime createdAt;
 
-    @Column(nullable = false)
-    private LocalDateTime data;
+    public Segnalazione(Contenuto contenuto, String commento, Users autore) {
+        this.statoSegnalazione = StatusRichieste.PENDING;
+        this.contenuto = contenuto;
+        this.commento = commento;
+        this.autore = autore;
+    }
 
     @Override
     public Long getId() {
-        return segnalazioneId;
+        return richiestaId;
     }
 
     @Override
@@ -50,30 +77,12 @@ public class Segnalazione implements Richieste {
     }
 
     @Override
-    public String motivazione() {
-        return "";
-    }
-
-    @Override
-    public Users getFrom() {
-        return null;
-    }
-
-    @Override
-    public Users getTo() {
-        return null;
-    }
-
-    @Override
     public TipoRichiesta getTipoRichiesta() {
         return TipoRichiesta.SEGNALAZIONE_CONTENUTO;
     }
 
     @Override
-    public void setContenuto(String contenuto) {
-    }
-
-    @Override
-    public void setStato(String stato) {
+    public LocalDateTime getData() {
+        return createdAt;
     }
 }

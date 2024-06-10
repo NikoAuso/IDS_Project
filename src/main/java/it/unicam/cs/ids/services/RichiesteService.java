@@ -1,162 +1,243 @@
-/*
 package it.unicam.cs.ids.services;
 
+import it.unicam.cs.ids.dto.*;
+import it.unicam.cs.ids.enumeration.Ruoli;
 import it.unicam.cs.ids.enumeration.StatusRichieste;
-import it.unicam.cs.ids.enumeration.TipoRichiesta;
-import it.unicam.cs.ids.model.Users;
-import it.unicam.cs.ids.model.richieste.Richieste;
-import it.unicam.cs.ids.repository.RichiesteRepository;
+import it.unicam.cs.ids.model.Comune;
+import it.unicam.cs.ids.model.POI.contenuto.Contenuto;
+import it.unicam.cs.ids.model.richieste.*;
+import it.unicam.cs.ids.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class RichiesteService {
 
     @Autowired
-    private RichiesteRepository richiesteRepository;
+    private AccreditamentoCuratoreRepository accreditamentoCuratoreRepository;
 
-    // Creazione di una nuova richiesta di pubblicazione
-    @Transactional
-    public Richieste create(String contenuto) {
-        Richieste richiesta = new Richieste() {
-            @Override
-            public Long getId() {
-                return 0L;
-            }
+    @Autowired
+    private AvanzamentoRuoloRepository avanzamentoRuoloRepository;
 
-            @Override
-            public StatusRichieste getStatoRichiesta() {
-                return null;
-            }
+    @Autowired
+    private SegnalazioneRepository segnalazioneRepository;
 
-            @Override
-            public String motivazione() {
-                return "";
-            }
+    @Autowired
+    private UserService userService;
 
-            @Override
-            public Users getFrom() {
-                return null;
-            }
+    @Autowired
+    private ComuneRepository comuneRepository;
 
-            @Override
-            public Users getTo() {
-                return null;
-            }
+    @Autowired
+    private ContenutoRepository contenutoRepository;
 
-            @Override
-            public String getDettagli() {
-                return "";
-            }
+    @Autowired
+    private ModificaContenutoRepository modificaContenutoRepository;
+    @Autowired
+    private EliminazioneContenutoRepository eliminazioneContenutoRepository;
 
-            @Override
-            public LocalDateTime getData() {
-                return null;
-            }
+    // Richieste AccreditamentoCuratore
+    public AccreditamentoCuratore createAccreditamentoCuratore(AccreditamentoCuratoreDto accreditamentoCuratoreDto) {
+        if (userService.getAuthenticatedUser().getAuthorities().contains(Ruoli.CURATORE)) {
+            throw new RuntimeException("Sei già curatore di un comune.");
+        }
 
-            @Override
-            public TipoRichiesta getTipoRichiesta() {
-                return null;
-            }
+        Comune comune = comuneRepository.findById(accreditamentoCuratoreDto.getComuneId())
+                .orElseThrow(() -> new RuntimeException("Comune non trovato."));
 
-            @Override
-            public void setContenuto(String contenuto) {
+        AccreditamentoCuratore richiesta = new AccreditamentoCuratore(
+                userService.getAuthenticatedUser(),
+                comune,
+                accreditamentoCuratoreDto.getCommento()
+        );
 
-            }
-
-            @Override
-            public void setStato(String stato) {
-
-            }
-        };
-        return richiesteRepository.save(richiesta);
+        return accreditamentoCuratoreRepository.save(richiesta);
     }
 
-    // Aggiornamento di una richiesta esistente
-    @Transactional
-    public Richieste update(Long id, String contenuto, String stato) {
-        Optional<Richieste> richiestaOpt = richiesteRepository.findById(id);
-        if (richiestaOpt.isPresent()) {
-            Richieste richiesta = richiestaOpt.get();
-            richiesta.setContenuto(contenuto);
-            richiesta.setStato(stato);
-            return richiesteRepository.save(richiesta);
+    public List<AccreditamentoCuratore> readAccreditamentoCuratore() {
+        return accreditamentoCuratoreRepository.findAll();
+    }
+
+    public AccreditamentoCuratore readAccreditamentoCuratore(Long id) {
+        return accreditamentoCuratoreRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Richiesta non trovata."));
+    }
+
+    public AccreditamentoCuratore updateAccreditamentoCuratore(Long id, AccreditamentoCuratoreDto accreditamentoCuratoreDto) {
+        return accreditamentoCuratoreRepository.findById(id).map(richiesta -> {
+            richiesta.setStatoAccreditamento(accreditamentoCuratoreDto.getStatoAccreditamento());
+            richiesta.setMotivazione(accreditamentoCuratoreDto.getMotivazione());
+            return accreditamentoCuratoreRepository.save(richiesta);
+        }).orElseThrow(() -> new RuntimeException("Richiesta non trovata."));
+    }
+
+    public void deleteAccreditamentoCuratore(Long id) {
+        if (accreditamentoCuratoreRepository.existsById(id)) {
+            accreditamentoCuratoreRepository.deleteById(id);
         } else {
-            throw new IllegalArgumentException("Richiesta non trovata!");
+            throw new RuntimeException("Richiesta non trovata.");
         }
     }
 
-    // Eliminazione di una richiesta
-    @Transactional
-    public void delete(Long id) {
-        if (richiesteRepository.existsById(id)) {
-            richiesteRepository.deleteById(id);
+
+    // Richieste AvanzamentoRuolo
+    public AvanzamentoRuolo createAvanzamentoRuolo(AvanzamentoRuoloDto avanzamentoRuoloDto) {
+        AvanzamentoRuolo richiesta = new AvanzamentoRuolo(
+                userService.getAuthenticatedUser(),
+                Ruoli.valueOf(avanzamentoRuoloDto.getRuoloRichiesto()),
+                avanzamentoRuoloDto.getCommento()
+        );
+
+        return avanzamentoRuoloRepository.save(richiesta);
+    }
+
+    public List<AvanzamentoRuolo> readAvanzamentoRuolo() {
+        return avanzamentoRuoloRepository.findAll();
+    }
+
+    public AvanzamentoRuolo readAvanzamentoRuolo(Long id) {
+        return avanzamentoRuoloRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Richiesta non trovata."));
+    }
+
+    public AvanzamentoRuolo updateAvanzamentoRuolo(Long id, AvanzamentoRuolo updatedAvanzamentoRuolo) {
+        return avanzamentoRuoloRepository.findById(id).map(richiesta -> {
+            richiesta.setStatoAvanzamento(updatedAvanzamentoRuolo.getStatoRichiesta());
+            richiesta.setMotivazione(updatedAvanzamentoRuolo.getMotivazione());
+            return avanzamentoRuoloRepository.save(richiesta);
+        }).orElseThrow(() -> new RuntimeException("Richiesta non trovata."));
+    }
+
+    public void deleteAvanzamentoRuolo(Long id) {
+        if (avanzamentoRuoloRepository.existsById(id)) {
+            avanzamentoRuoloRepository.deleteById(id);
         } else {
-            throw new IllegalArgumentException("Richiesta non trovata!");
+            throw new RuntimeException("Richiesta non trovata.");
         }
     }
 
-    // Recupero di tutte le richieste
-    @Transactional(readOnly = true)
-    public List<Richieste> getAllRichieste() {
-        return richiesteRepository.findAll();
+    // CRUD methods for Segnalazione
+    public Segnalazione createSegnalazione(SegnalazioneDto segnalazioneDto) {
+        if (contenutoRepository.findById(segnalazioneDto.getContenutoId())
+                .orElseThrow(() -> new RuntimeException("Contenuto non trovato")) == null) {
+            throw new RuntimeException("Contenuto non trovato.");
+        }
+
+        Contenuto contenuto = contenutoRepository.findById(segnalazioneDto.getContenutoId())
+                .orElseThrow(() -> new RuntimeException("Contenuto non trovato"));
+
+        Segnalazione segnalazione = new Segnalazione(
+                contenuto,
+                segnalazioneDto.getCommento(),
+                userService.getAuthenticatedUser()
+        );
+
+        return segnalazioneRepository.save(segnalazione);
     }
 
-    // Recupero di una richiesta per ID
-    @Transactional(readOnly = true)
-    public Optional<Richieste> getRichiesteById(Long id) {
-        return richiesteRepository.findById(id);
+    public List<Segnalazione> readSegnalazione() {
+        return segnalazioneRepository.findAll();
     }
 
-    // Aggiornamento dello stato della richiesta
-    @Transactional
-    public Richieste updateStatoRichieste(Long id, String stato) {
-        Optional<Richieste> richiestaOpt = richiesteRepository.findById(id);
-        if (richiestaOpt.isPresent()) {
-            Richieste richieste = richiestaOpt.get();
-            richieste.setStato(stato);
-            return richiesteRepository.save(richieste);
+    public Segnalazione readSegnalazione(Long id) {
+        return segnalazioneRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Segnalazione non trovata."));
+    }
+
+    public Segnalazione updateSegnalazione(Long id, Segnalazione updatedSegnalazione) {
+        return segnalazioneRepository.findById(id).map(richiesta -> {
+            richiesta.setStatoSegnalazione(updatedSegnalazione.getStatoRichiesta());
+            richiesta.setMotivazione(updatedSegnalazione.getMotivazione());
+            return segnalazioneRepository.save(richiesta);
+        }).orElseThrow(() -> new RuntimeException("Segnalazione non trovata."));
+    }
+
+    public void deleteSegnalazione(Long id) {
+        if (segnalazioneRepository.existsById(id)) {
+            segnalazioneRepository.deleteById(id);
         } else {
-            throw new IllegalArgumentException("Richiesta non trovata!");
+            throw new RuntimeException("Segnalazione non trovata.");
         }
     }
 
-    */
-/*//*
-/ Logica aggiuntiva per interagire con AvanzamentoRuolo, PubblicazioneSocialDto, e Segnalazione
-    @Transactional
-    public void avanzamentoRuolo(Long richiestaId, Users users) {
-        AvanzamentoRuolo avanzamentoRuolo = new AvanzamentoRuolo();
-        avanzamentoRuolo.setRichiestaId(richiestaId);
-        avanzamentoRuolo.setRichiedente(users);
-        avanzamentoRuolo.setStato("PENDING");
-        avanzamentoRuoloRepository.save(avanzamentoRuolo);
+    // RICHIESTA MODIFICA CONTENUTO
+    public ModificaContenuto createModificaContenuto(ModificaContenutoDto modificaContenutoDto) {
+        if (contenutoRepository.findById(modificaContenutoDto.getContenuto())
+                .orElseThrow(() -> new RuntimeException("contenuto non trovato")) == null) {
+            throw new RuntimeException("Contenuto non trovato.");
+        }
+
+        Contenuto contenuto = contenutoRepository.findById(modificaContenutoDto.getContenuto())
+                .orElseThrow(() -> new RuntimeException("Contenuto non trovato"));
+
+        ModificaContenuto modificaContenuto = new ModificaContenuto(
+                userService.getAuthenticatedUser(),
+                contenuto,
+                modificaContenutoDto.getDescrizioneModifica()
+        );
+
+        return modificaContenutoRepository.save(modificaContenuto);
     }
 
-    @Transactional
-    public void pubblicazioneSocial(Long richiestaId, String contenuto, List<String> social) {
-        PubblicazioneSocialDto pubblicazioneSocial = new PubblicazioneSocialDto();
-        pubblicazioneSocial.setRichiestaId(richiestaId);
-        pubblicazioneSocial.setContenuto(contenuto);
-        pubblicazioneSocial.setSocial(social);
-        pubblicazioneSocialRepository.save(pubblicazioneSocial);
+    public List<ModificaContenuto> readModificaContenuto() {
+        return modificaContenutoRepository.findAll();
     }
 
-    @Transactional
-    public void segnalazione(Long segnalazioneId, String motivazione) {
-        Segnalazione segnalazione = new Segnalazione();
-        segnalazione.setSegnalazioneId(segnalazioneId);
-        segnalazione.setMotivazione(motivazione);
-        segnalazione.setStato("");
-        segnalazioneRepository.save(segnalazione);
-        }*//*
+    public ModificaContenuto readModificaContenuto(Long id) {
+        return modificaContenutoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Richiesta non trovata."));
+    }
 
+    public ModificaContenuto updateModificaContenuto(Long id, ModificaContenutoDto modificaContenutoDto) {
+        return modificaContenutoRepository.findById(id).map(richiesta -> {
+            richiesta.setDescrizioneModifica(modificaContenutoDto.getDescrizioneModifica());
+            return modificaContenutoRepository.save(richiesta);
+        }).orElseThrow(() -> new RuntimeException("Richiesta non trovata."));
+    }
 
+    public ModificaContenuto updateModificaContenuto(Long id, StatusRichieste statoRichiesta) {
+        return modificaContenutoRepository.findById(id).map(richiesta -> {
+            richiesta.setStatoRichiesta(statoRichiesta);
+            return modificaContenutoRepository.save(richiesta);
+        }).orElseThrow(() -> new RuntimeException("Modifica contenuto non trovata."));
+    }
+
+    // RICHIESTA ELIMINAZIONE CONTENUTO
+    public EliminazioneContenuto createEliminazioneContenuto(EliminazioneContenutoDto eliminazioneContenutoDto) {
+        // do nothing
+        return null;
+    }
+
+    public List<EliminazioneContenuto> readEliminazioneContenuto() {
+        return eliminazioneContenutoRepository.findAll();
+    }
+
+    public EliminazioneContenuto readEliminazioneContenuto(Long id) {
+        return eliminazioneContenutoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Richiesta non trovata."));
+    }
+
+    public EliminazioneContenuto updateEliminazioneContenuto(Long id, EliminazioneContenutoDto eliminazioneContenutoDto) {
+        return eliminazioneContenutoRepository.findById(id).map(richiesta -> {
+            richiesta.setMotivazioneEliminazione(eliminazioneContenutoDto.getMotivazioneEliminazione());
+            return eliminazioneContenutoRepository.save(richiesta);
+        }).orElseThrow(() -> new RuntimeException("Richiesta non trovata."));
+    }
+
+    public EliminazioneContenuto updateEliminazioneContenuto(Long id, StatusRichieste statoRichiesta) {
+        return eliminazioneContenutoRepository.findById(id).map(richiesta -> {
+            richiesta.setStatoRichiesta(statoRichiesta);
+            return eliminazioneContenutoRepository.save(richiesta);
+        }).orElseThrow(() -> new RuntimeException("Richiesta non trovata."));
+    }
+
+    public EliminazioneContenuto updateEliminazioneContenuto(Long id, StatusRichieste statoRichiesta, EliminazioneContenutoDto eliminazioneContenutoDto) {
+        return eliminazioneContenutoRepository.findById(id).map(richiesta -> {
+            richiesta.setStatoRichiesta(statoRichiesta);
+            richiesta.setMotivazioneEliminazione(eliminazioneContenutoDto.getMotivazioneEliminazione());
+            return eliminazioneContenutoRepository.save(richiesta);
+        }).orElseThrow(() -> new RuntimeException("Richiesta non trovata."));
+    }
 }
-
-*/

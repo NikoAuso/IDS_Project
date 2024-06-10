@@ -1,9 +1,8 @@
 package it.unicam.cs.ids.model.richieste;
 
-import it.unicam.cs.ids.enumeration.Ruoli;
 import it.unicam.cs.ids.enumeration.StatusRichieste;
 import it.unicam.cs.ids.enumeration.TipoRichiesta;
-import it.unicam.cs.ids.model.Comune;
+import it.unicam.cs.ids.model.POI.contenuto.Contenuto;
 import it.unicam.cs.ids.model.Users;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,17 +16,18 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class AvanzamentoRuolo implements Richieste{
+public class EliminazioneContenuto implements Richieste {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long richiestaId;
 
     /**
-     * Lo stato della richiesta di avanzamento
+     * Lo stato della richiesta di modifica del contenuto
      */
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private StatusRichieste statoAvanzamento;
+    private StatusRichieste statoRichiesta;
 
     /**
      * La motivazione dell'eventuale rifiuto della richiesta
@@ -43,27 +43,29 @@ public class AvanzamentoRuolo implements Richieste{
     private Users richiedente;
 
     /**
-     * Il ruolo richiesto dall'utente richiedente
+     * Il contenuto da modificare
      */
-    @Column(nullable = false)
-    private Ruoli ruoloRichiesto;
+    @ManyToOne
+    @JoinColumn(name = "contenutoId", nullable = false)
+    private Contenuto contenuto;
 
     /**
-     * Il commento della richiesta di accreditamento
+     * Il commento della richiesta di modifica
      */
     @Column(nullable = false)
-    private String commento;
+    private String motivazioneEliminazione;
 
     @CreationTimestamp
     @Column(name = "createdAt", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;
 
-    public AvanzamentoRuolo(Users richiedente, Ruoli ruoloRichiesto, String commento) {
+    public EliminazioneContenuto(Users richiedente, Contenuto contenuto, String motivazioneEliminazione) {
+        this.statoRichiesta = StatusRichieste.PENDING;
+        this.motivazione = null;
         this.richiedente = richiedente;
-        this.ruoloRichiesto = ruoloRichiesto;
-        this.commento = commento;
-        this.statoAvanzamento = StatusRichieste.PENDING;
+        this.contenuto = contenuto;
+        this.motivazioneEliminazione = motivazioneEliminazione;
     }
 
     @Override
@@ -73,12 +75,12 @@ public class AvanzamentoRuolo implements Richieste{
 
     @Override
     public StatusRichieste getStatoRichiesta() {
-        return statoAvanzamento;
+        return statoRichiesta;
     }
 
     @Override
     public TipoRichiesta getTipoRichiesta() {
-        return TipoRichiesta.AVANZAMENTO_RUOLO;
+        return TipoRichiesta.MODIFICA_CONTENUTO;
     }
 
     @Override

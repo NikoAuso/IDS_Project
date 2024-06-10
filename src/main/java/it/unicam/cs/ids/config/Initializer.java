@@ -1,6 +1,6 @@
 package it.unicam.cs.ids.config;
 
-import it.unicam.cs.ids.enumeration.TipoRuolo;
+import it.unicam.cs.ids.enumeration.Ruoli;
 import it.unicam.cs.ids.model.Comune;
 import it.unicam.cs.ids.model.Users;
 import it.unicam.cs.ids.repository.ComuneRepository;
@@ -29,52 +29,52 @@ public class Initializer {
         Users userTurista = new Users("test", "turista", "test_turista@example.it", "test_turista", null);
         userTurista.setPassword(passwordEncoder.encode("test_turista"));
         userTurista.setAutorizzato(false);
-        userTurista.setRuolo(TipoRuolo.TURISTA);
+        userTurista.setRuolo(Ruoli.TURISTA);
 
         Users userContributor = new Users("test", "contributor", "test_contributor@example.it", "test_contributor", null);
         userContributor.setPassword(passwordEncoder.encode("test_contributor"));
         userContributor.setAutorizzato(false);
-        userContributor.setRuolo(TipoRuolo.CONTRIBUTOR);
+        userContributor.setRuolo(Ruoli.CONTRIBUTOR);
 
         Users userContributorAutorizzato = new Users("test", "contributor_autorizzato", "test_contributor_autorizzato@example.it", "test_contributor_autorizzato", null);
         userContributorAutorizzato.setPassword(passwordEncoder.encode("test_contributor_autorizzato"));
         userContributorAutorizzato.setAutorizzato(true);
-        userContributorAutorizzato.setRuolo(TipoRuolo.CONTRIBUTOR);
+        userContributorAutorizzato.setRuolo(Ruoli.CONTRIBUTOR);
 
         Users userCuratore = new Users("test", "curatore", "test_curatore@example.it", "test_curatore", null);
         userCuratore.setPassword(passwordEncoder.encode("test_curatore"));
         userCuratore.setAutorizzato(true);
-        userCuratore.setRuolo(TipoRuolo.CURATORE);
+        userCuratore.setRuolo(Ruoli.CURATORE);
 
         Users userCuratore1 = new Users("test", "curatore_1", "test_curatore_1@example.it", "test_curatore_1", null);
         userCuratore1.setPassword(passwordEncoder.encode("test_curatore_1"));
         userCuratore1.setAutorizzato(true);
-        userCuratore1.setRuolo(TipoRuolo.CURATORE);
+        userCuratore1.setRuolo(Ruoli.CURATORE);
 
         Users userCuratore2 = new Users("test", "curatore_2", "test_curatore_2@example.it", "test_curatore_2", null);
         userCuratore2.setPassword(passwordEncoder.encode("test_curatore_2"));
         userCuratore2.setAutorizzato(true);
-        userCuratore2.setRuolo(TipoRuolo.CURATORE);
+        userCuratore2.setRuolo(Ruoli.CURATORE);
 
         Users userCuratore3 = new Users("test", "curatore_3", "test_curatore_3@example.it", "test_curatore_3", null);
         userCuratore3.setPassword(passwordEncoder.encode("test_curatore_3"));
         userCuratore3.setAutorizzato(true);
-        userCuratore3.setRuolo(TipoRuolo.CURATORE);
+        userCuratore3.setRuolo(Ruoli.CURATORE);
 
         Users userCuratore4 = new Users("test", "curatore_4", "test_curatore_4@example.it", "test_curatore_4", null);
         userCuratore4.setPassword(passwordEncoder.encode("test_curatore_4"));
         userCuratore4.setAutorizzato(true);
-        userCuratore4.setRuolo(TipoRuolo.CURATORE);
+        userCuratore4.setRuolo(Ruoli.CURATORE);
 
         Users userAnimatore = new Users("test", "animatore", "test_animatore@example.it", "test_animatore", null);
         userAnimatore.setPassword(passwordEncoder.encode("test_animatore"));
         userAnimatore.setAutorizzato(true);
-        userAnimatore.setRuolo(TipoRuolo.ANIMATORE);
+        userAnimatore.setRuolo(Ruoli.ANIMATORE);
 
         Users userAdmin = new Users("test", "admin", "test_admin@example.it", "test_admin", null);
         userAdmin.setPassword(passwordEncoder.encode("test_admin"));
         userAdmin.setAutorizzato(true);
-        userAdmin.setRuolo(TipoRuolo.ADMIN);
+        userAdmin.setRuolo(Ruoli.ADMIN);
 
         userRepository.save(userTurista);
         userRepository.save(userContributor);

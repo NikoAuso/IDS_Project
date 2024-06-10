@@ -2,13 +2,13 @@ package it.unicam.cs.ids.model.richieste;
 
 import it.unicam.cs.ids.enumeration.StatusRichieste;
 import it.unicam.cs.ids.enumeration.TipoRichiesta;
+import it.unicam.cs.ids.model.Comune;
 import it.unicam.cs.ids.model.Users;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -22,14 +22,36 @@ public class AccreditamentoCuratore implements Richieste {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long richiestaId;
 
+    /**
+     * Lo stato della richiesta di accreditamento
+     */
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private StatusRichieste statoRichiesta;
+    private StatusRichieste statoAccreditamento;
 
+    /**
+     * La motivazione dell'eventuale rifiuto della richiesta
+     */
+    @Column(nullable = false)
+    private String motivazione;
+
+    /**
+     * Il richiedente dell'accreditamento
+     */
     @ManyToOne
     @JoinColumn(name = "richiedente", nullable = false)
     private Users richiedente;
 
+    /**
+     * Il comune di cui si richiede l'accreditamento come curatore
+     */
+    @ManyToOne
+    @JoinColumn(name = "comuneId", nullable = false)
+    private Comune comune;
+
+    /**
+     * Il commento della richiesta di accreditamento
+     */
     @Column(nullable = false)
     private String commento;
 
@@ -38,11 +60,13 @@ public class AccreditamentoCuratore implements Richieste {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;
 
-    @UpdateTimestamp
-    @Column(name = "updatedAt")
-    @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime updatedAt;
-
+    public AccreditamentoCuratore(Users richiedente, Comune comune, String commento) {
+        this.statoAccreditamento = StatusRichieste.PENDING;
+        this.motivazione = null;
+        this.richiedente = richiedente;
+        this.comune = comune;
+        this.commento = commento;
+    }
 
     @Override
     public Long getId() {
@@ -51,46 +75,16 @@ public class AccreditamentoCuratore implements Richieste {
 
     @Override
     public StatusRichieste getStatoRichiesta() {
-        return null;
-    };
-
-    @Override
-    public String motivazione() {
-        return "";
-    }
-
-    @Override
-    public Users getFrom() {
-        return null;
-    }
-
-    @Override
-    public Users getTo() {
-        return null;
-    }
-
-    @Override
-    public String getDettagli() {
-        return "";
-    }
-
-    @Override
-    public LocalDateTime getData() {
-        return null;
+        return statoAccreditamento;
     }
 
     @Override
     public TipoRichiesta getTipoRichiesta() {
-        return null;
+        return TipoRichiesta.ACCREDITAMENTO_CURATORE;
     }
 
     @Override
-    public void setContenuto(String contenuto) {
-
-    }
-
-    @Override
-    public void setStato(String stato) {
-
+    public LocalDateTime getData() {
+        return createdAt;
     }
 }
