@@ -1,8 +1,11 @@
 package it.unicam.cs.ids.services;
 
+import it.unicam.cs.ids.dto.ContenutoDto;
 import it.unicam.cs.ids.dto.ContestDto;
 import it.unicam.cs.ids.enumeration.Ruoli;
 import it.unicam.cs.ids.model.Contest;
+import it.unicam.cs.ids.model.POI.POI;
+import it.unicam.cs.ids.model.POI.contenuto.Contenuto;
 import it.unicam.cs.ids.model.POI.contenuto.ContenutoContest;
 import it.unicam.cs.ids.model.Users;
 import it.unicam.cs.ids.repository.ContenutoRepository;
@@ -22,6 +25,8 @@ public class ContestService {
     private UserService userService;
     @Autowired
     private ContenutoRepository contenutoRepository;
+    @Autowired
+    private ContenutoService contenutoService;
 
     public Contest create(ContestDto contestDto) {
         if (contestRepository.findContestByNome(contestDto.getNome()).isPresent()) {
@@ -32,7 +37,7 @@ public class ContestService {
                 contestDto.getNome(),
                 contestDto.getDescrizione(),
                 contestDto.getTema(),
-                contestDto.getAperto(),
+                contestDto.isAperto(),
                 userService.getAuthenticatedUser(),
                 contestDto.getDataInizio(),
                 contestDto.getDataFine()
@@ -43,7 +48,11 @@ public class ContestService {
 
     public Contest read(Long id) {
         return contestRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Contest non trovato"));
+                .filter(contest -> contest.getDataFine().isAfter(LocalDate.now().atStartOfDay()))
+                .filter(contest -> contest.isAperto()
+                        || contest.getUtentiPartecipanti().stream().map(Users::getUserId).toList().contains(userService.getAuthenticatedUser().getUserId())
+                        || contest.getAnimatore().getUserId().equals(userService.getAuthenticatedUser().getUserId()))
+                .orElseThrow(() -> new RuntimeException("contest non trovato"));
     }
 
     public Contest update(Long id, Contest contestDetails) {
@@ -63,11 +72,13 @@ public class ContestService {
     }
 
     public List<Contest> getAllContests() {
-        return contestRepository.findAll().stream().filter(
-                contest -> contest.getDataFine().isAfter(LocalDate.now().atStartOfDay()) &&
-                        contest.getAperto().equals(true) &&
-                        contest.getUtentiPartecipanti().contains(userService.getAuthenticatedUser())
-        ).toList();
+        return contestRepository.findAll()
+                .stream()
+                .filter(contest -> contest.getDataFine().isAfter(LocalDate.now().atStartOfDay()))
+                .filter(contest -> contest.isAperto()
+                        || contest.getUtentiPartecipanti().stream().map(Users::getUserId).toList().contains(userService.getAuthenticatedUser().getUserId())
+                        || contest.getAnimatore().getUserId().equals(userService.getAuthenticatedUser().getUserId()))
+                .toList();
     }
 
     public List<ContenutoContest> getAllContenutiByContest(Long contestId) {
@@ -76,11 +87,36 @@ public class ContestService {
                 .getContenuti();
     }
 
+    public Contest createContenutoContest(Long contestId, ContenutoDto contenutoDto) {
+        Contest contest = contestRepository.findById(contestId)
+                .orElseThrow(() -> new RuntimeException("contest non trovato"));
+
+        if(!contest.getUtentiPartecipanti().stream().map(Users::getUserId).toList().contains(userService.getAuthenticatedUser().getUserId()))
+            throw new RuntimeException("non sei autorizzato a creare contenuti per questo contest");
+
+        Contenuto contenuto = contenutoService.create(contenutoDto);
+        ContenutoContest contenutoContest = new ContenutoContest(contenuto, contest);
+
+        contenutoRepository.save(contenutoContest);
+        List<ContenutoContest> contenutiContests = contest.getContenuti();
+        contenutiContests.add(contenutoContest);
+        contest.setContenuti(contenutiContests);
+        return contestRepository.save(contest);
+    }
+
     public Contest partecipa(Long contestId) {
         Contest contest = contestRepository.findById(contestId)
                 .orElseThrow(() -> new RuntimeException("contest non trovato"));
 
-        contest.getUtentiPartecipanti().add(userService.getAuthenticatedUser());
+        List<Users> partecipanti = contest.getUtentiPartecipanti();
+
+        if (contest.getAnimatore().getUserId().equals(userService.getAuthenticatedUser().getUserId()))
+            throw new RuntimeException("sei l'animatore di questo contest");
+        else if (!partecipanti.contains(userService.getAuthenticatedUser())) {
+            partecipanti.add(userService.getAuthenticatedUser());
+            contest.setUtentiPartecipanti(partecipanti);
+        } else
+            throw new RuntimeException("utente già partecipante");
 
         return contestRepository.save(contest);
     }
@@ -89,7 +125,7 @@ public class ContestService {
         Contest contest = contestRepository.findById(contestId)
                 .orElseThrow(() -> new RuntimeException("contest non trovato"));
 
-        String link = "http://localhost:8080/contest/" + contest.getContestId().hashCode();
+        String link = "http://localhost:8081/api/contest/partecipa/" + contest.getContestId();
         contest.setLinkInvito(link);
 
         return link;
@@ -113,14 +149,15 @@ public class ContestService {
                 .getContenuti().stream()
                 .filter(contenuto -> contenuto.getContenutoId().equals(contenutoId))
                 .map(contenuto -> {
-                     contenuto.setMotivazione(motivo);
+                    contenuto.setValidato(false);
+                    contenuto.setMotivazione(motivo);
                     return contenutoRepository.save(contenuto);
                 })
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Contenuto non trovato"));
     }
 
-    public String sendInvitiContest(Long contestId, List<Long> utentiId) {
+    public Contest sendInvitiContest(Long contestId, List<Long> utentiId) {
         Contest contest = contestRepository.findById(contestId)
                 .orElseThrow(() -> new RuntimeException("Contest non trovato"));
 
@@ -130,8 +167,6 @@ public class ContestService {
                 contest.getUtentiPartecipanti().add(userService.read(userId));
             }
         });
-        contestRepository.save(contest);
-
-        return "Utenti invitati con successo";
+        return contestRepository.save(contest);
     }
 }

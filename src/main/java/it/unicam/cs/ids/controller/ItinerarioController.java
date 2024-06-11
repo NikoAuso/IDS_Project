@@ -21,8 +21,8 @@ public class ItinerarioController {
 
     @GetMapping("/itinerari/all")
     public ResponseEntity<?> getAllItinerari() {
-        List<Itinerario> itinerari = itinerarioService.getAll();
         try {
+            List<Itinerario> itinerari = itinerarioService.getAll();
             if (itinerari.isEmpty())
                 return ResponseEntity.ok("Nessun itinerario trovato nel database.");
             else
@@ -55,6 +55,7 @@ public class ItinerarioController {
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('CONTRIBUTOR', 'CURATORE')")
     @PutMapping("/api/itinerari/{id}")
     public ResponseEntity<?> updateItinerario(@PathVariable Long id, @RequestBody @Valid ItinerarioDto itinerarioAggiornato, BindingResult result) {
         if (result.hasErrors()) {
@@ -68,6 +69,7 @@ public class ItinerarioController {
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('CONTRIBUTOR', 'CURATORE')")
     @DeleteMapping("/api/itinerari/{id}")
     public ResponseEntity<?> deleteItinerario(@PathVariable Long id) {
         try {
@@ -78,24 +80,27 @@ public class ItinerarioController {
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('CONTRIBUTOR', 'CURATORE')")
     @PostMapping("/api/itinerari/{itinerarioId}/{poiId}")
     public ResponseEntity<?> addPOI(@PathVariable Long itinerarioId, @PathVariable Long poiId) {
         try {
             return ResponseEntity.ok(itinerarioService.addPointOfInterest(itinerarioId, poiId));
         } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(500).body("Si è verificato un errore: " + e.getMessage());
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('CONTRIBUTOR', 'CURATORE')")
     @DeleteMapping("/api/itinerari/{itinerarioId}/{poiId}")
     public ResponseEntity<?> removePOI(@PathVariable Long itinerarioId, @PathVariable Long poiId) {
         try {
             return ResponseEntity.ok(itinerarioService.removePointOfInterest(itinerarioId, poiId));
         } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(500).body("Si è verificato un errore: " + e.getMessage());
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('CONTRIBUTOR', 'CURATORE')")
     @PostMapping("/api/itinerari/{itinerarioId}/add")
     public ResponseEntity<?> addMaterialeMultimediale(@PathVariable Long itinerarioId,
                                                       @RequestBody @Valid MaterialeMultimedialeDto materialeMultimedialeDto,
@@ -107,7 +112,7 @@ public class ItinerarioController {
         try {
             return ResponseEntity.ok(itinerarioService.addMaterialeMultimediale(itinerarioId, materialeMultimedialeDto));
         } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(500).body("Si è verificato un errore: " + e.getMessage());
         }
     }
 }

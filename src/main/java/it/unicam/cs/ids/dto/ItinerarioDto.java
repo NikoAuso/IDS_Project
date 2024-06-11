@@ -4,6 +4,7 @@ import it.unicam.cs.ids.model.MaterialeMultimediale;
 import it.unicam.cs.ids.model.POI.POI;
 import it.unicam.cs.ids.model.Users;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,11 +27,9 @@ public class ItinerarioDto {
     @NotEmpty(message = "La durata è richiesta")
     private String durata;
 
-    @NotEmpty(message = "Il percorso è richiesto")
-    private List<POI> percorso;
+    @NotNull(message = "Il percorso è richiesto")
+    private List<Long> percorso;
 
-    private List<MaterialeMultimediale> materialiMultimediali;
-
-    @NotEmpty(message = "L'autore è richiesto")
-    private Users autore;
+    @NotNull(message = "L'autore è richiesto")
+    private Long autore;
 }

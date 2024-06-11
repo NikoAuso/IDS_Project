@@ -1,6 +1,8 @@
 package it.unicam.cs.ids.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import it.unicam.cs.ids.model.POI.POI;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -42,15 +44,16 @@ public class Itinerario {
             joinColumns = @JoinColumn(name = "itinerarioId"),
             inverseJoinColumns = @JoinColumn(name = "poiId")
     )
-    @JsonIdentityReference
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "poiId")
     private List<POI> percorso;
 
     @OneToMany(mappedBy = "materialeId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    @JsonIdentityReference
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "materialeId")
     private List<MaterialeMultimediale> materialiMultimediali;
 
     @ManyToOne
     @JoinColumn(name = "autore", nullable = false)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "userId")
     private Users autore;
 
     @CreationTimestamp
@@ -63,13 +66,12 @@ public class Itinerario {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime updatedAt;
 
-    public Itinerario(String nome, String descrizione, String distanza, String durata, List<POI> percorso, List<MaterialeMultimediale> materialiMultimediali, Users autore){
+    public Itinerario(String nome, String descrizione, String distanza, String durata, List<POI> percorso, Users autore){
         this.nome = nome;
         this.descrizione = descrizione;
         this.distanza = distanza;
         this.durata = durata;
         this.percorso = percorso;
-        this.materialiMultimediali = materialiMultimediali;
         this.autore = autore;
     }
 }

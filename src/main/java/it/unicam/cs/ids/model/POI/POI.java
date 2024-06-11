@@ -1,7 +1,6 @@
 package it.unicam.cs.ids.model.POI;
 
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import it.unicam.cs.ids.enumeration.TipoPOI;
 import it.unicam.cs.ids.model.Comune;
 import it.unicam.cs.ids.model.Itinerario;
@@ -47,7 +46,7 @@ public abstract class POI {
      */
     @ManyToOne
     @JoinColumn(name = "comune", nullable = false)
-    @JsonManagedReference
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "comuneId")
     private Comune comune;
 
     /**
@@ -59,14 +58,14 @@ public abstract class POI {
             joinColumns = @JoinColumn(name = "poiId"),
             inverseJoinColumns = @JoinColumn(name = "userId")
     )
-    @JsonIdentityReference
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "userId")
     private List<Users> users;
 
     /**
      * Lista dei contenuti associati al POI
      */
     @OneToMany(mappedBy = "contenutoId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    @JsonIdentityReference
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "contenutoId")
     private List<Contenuto> contenuti;
 
     /**
@@ -78,11 +77,11 @@ public abstract class POI {
             joinColumns = @JoinColumn(name = "poiId"),
             inverseJoinColumns = @JoinColumn(name = "itinerarioId")
     )
-    @JsonIdentityReference
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "itinerarioId")
     private List<Itinerario> itinerari;
 
     @OneToMany(mappedBy = "recensioneId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    @JsonIdentityReference
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "recensioneId")
     private List<Recensione> recensioni;
 
     @CreationTimestamp
@@ -98,7 +97,7 @@ public abstract class POI {
     public POI() {
     }
 
-    public POI(String nome, String descrizione, Comune comune, double longitudine, double latitudine) {
+    public POI(String nome, String descrizione, Comune comune, double longitudine, double latitudine, boolean validato) {
         this.nome = nome;
         this.descrizione = descrizione;
 
@@ -106,6 +105,8 @@ public abstract class POI {
 
         this.longitudine = longitudine;
         this.latitudine = latitudine;
+
+        this.validato = validato;
     }
 
     public abstract TipoPOI getType();

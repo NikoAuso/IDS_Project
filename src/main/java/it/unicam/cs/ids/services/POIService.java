@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.services;
 
 import it.unicam.cs.ids.dto.POIDto;
+import it.unicam.cs.ids.enumeration.Ruoli;
 import it.unicam.cs.ids.enumeration.TipoCategoriePOIFisico;
 import it.unicam.cs.ids.enumeration.TipoCategoriePOILogico;
 import it.unicam.cs.ids.enumeration.TipoPOI;
@@ -39,7 +40,7 @@ public class POIService extends Publisher {
         }
 
         POI poiToSave = createPOI(poi, tipoPOI, comuneId);
-        poiToSave.setValidato(userService.getAuthenticatedUser().getAutorizzato());
+        poiToSave.setValidato(userService.getAuthenticatedUser().getRuolo() == Ruoli.CURATORE);
         poiRepository.save(poiToSave);
 
         Users user = comuneRepository.findById(comuneId)
@@ -54,6 +55,7 @@ public class POIService extends Publisher {
 
     public POI read(Long id) {
         return poiRepository.findById(id)
+                .filter(POI::isValidato)
                 .orElseThrow(() -> new RuntimeException("POI non trovato."));
     }
 
@@ -102,14 +104,20 @@ public class POIService extends Publisher {
 
     public List<POI> getAllPOIsOfComune(Long comuneId) {
         return poiRepository.findAllByComune(comuneRepository.findById(comuneId)
-                .orElseThrow(() -> new RuntimeException("Comune non trovato.")));
+                        .orElseThrow(() -> new RuntimeException("Comune non trovato.")))
+                .stream()
+                .filter(POI::isValidato)
+                .toList();
     }
 
     public POI validate(Long poiId) {
-        return poiRepository.findById(poiId).map(p -> {
-            p.setValidato(true);
-            return poiRepository.save(p);
-        }).orElseThrow(() -> new RuntimeException("POI non trovato."));
+        return poiRepository.findById(poiId)
+                .filter(p -> !p.isValidato())
+                .map(p -> {
+                    p.setValidato(true);
+                    return poiRepository.save(p);
+                })
+                .orElseThrow(() -> new RuntimeException("POI non trovato."));
     }
 
     private POI createPOI (POIDto poi, TipoPOI tipoPOI, Long comuneId) {
@@ -128,7 +136,8 @@ public class POIService extends Publisher {
                     poi.getServiziDisponibili(),
                     poi.getSitoWeb(),
                     poi.getContatti(),
-                    (poi.getCategoriaFisico() != null ? poi.getCategoriaFisico() : TipoCategoriePOIFisico.GENERICO)
+                    (poi.getCategoriaFisico() != null ? poi.getCategoriaFisico() : TipoCategoriePOIFisico.GENERICO),
+                    userService.getAuthenticatedUser().getAutorizzato()
             );
         } else if(tipoPOI.equals(TipoPOI.LOGICO)) {
             return new POILogico(
@@ -139,7 +148,8 @@ public class POIService extends Publisher {
                     poi.getLatitudine(),
                     poi.getInformazioniStoriche(),
                     poi.getArea(),
-                    (poi.getCategoriaLogico() != null ? poi.getCategoriaLogico() : TipoCategoriePOILogico.GENERICO)
+                    (poi.getCategoriaLogico() != null ? poi.getCategoriaLogico() : TipoCategoriePOILogico.GENERICO),
+                    userService.getAuthenticatedUser().getAutorizzato()
             );
         } else {
             throw new RuntimeException("Tipo POI non valido.");

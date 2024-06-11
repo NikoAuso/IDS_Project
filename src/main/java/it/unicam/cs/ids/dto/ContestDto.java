@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -22,9 +23,9 @@ public class ContestDto {
     private String tema;
 
     @NotEmpty(message = "Il campo aperto è richiesto")
-    private Boolean aperto;
+    private boolean aperto;
 
-    private Long[] utentiPartecipanti;
+    private List<Long> utentiPartecipanti;
 
     @NotEmpty(message = "Il campo data di inizio è richiesto")
     private LocalDateTime dataInizio;

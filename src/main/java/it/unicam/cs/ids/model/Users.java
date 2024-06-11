@@ -1,7 +1,9 @@
 package it.unicam.cs.ids.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import it.unicam.cs.ids.enumeration.Ruoli;
 import it.unicam.cs.ids.model.POI.POI;
 import jakarta.persistence.*;
@@ -56,7 +58,7 @@ public class Users implements UserDetails {
             joinColumns = @JoinColumn(name = "userId"),
             inverseJoinColumns = @JoinColumn(name = "poiId")
     )
-    @JsonIdentityReference
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "poiId")
     private List<POI> preferiti;
 
     /**
@@ -68,21 +70,21 @@ public class Users implements UserDetails {
             joinColumns = @JoinColumn(name = "userId"),
             inverseJoinColumns = @JoinColumn(name = "contestId")
     )
-    @JsonIdentityReference
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "contestId")
     private List<Contest> partecipazioneContest;
 
     /**
      * Lista degli itinerari creati dall'utente
      */
     @OneToMany(mappedBy = "itinerarioId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    @JsonIdentityReference
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "itinerarioId")
     private List<Itinerario> itinerari;
 
     /**
      * Lista delle recensioni scritte dall'utente
      */
     @OneToMany(mappedBy = "recensioneId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    @JsonIdentityReference
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "recensioneId")
     private List<Recensione> recensione;
 
     @CreationTimestamp

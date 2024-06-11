@@ -40,7 +40,7 @@ public class ItinerarioService extends Publisher {
             throw new RuntimeException("l'itinerario esiste già.");
         }
 
-        if (itinerarioDto.getPercorso().size() >= 2)
+        if (itinerarioDto.getPercorso().size() < 2)
             throw new RuntimeException("l'itinerario deve avere almeno due punti di interesse.");
 
         checkComunePOI(itinerarioDto);
@@ -50,10 +50,18 @@ public class ItinerarioService extends Publisher {
                 itinerarioDto.getDescrizione(),
                 itinerarioDto.getDistanza(),
                 itinerarioDto.getDurata(),
-                itinerarioDto.getPercorso(),
-                itinerarioDto.getMaterialiMultimediali(),
-                itinerarioDto.getAutore()
+                itinerarioDto.getPercorso()
+                        .stream()
+                        .map(
+                                p -> poiRepository.findById(p)
+                                        .orElseThrow(() -> new RuntimeException("POI non trovato."))
+                        ).toList(),
+                userService.read(itinerarioDto.getAutore())
         );
+
+        if (userService.getAuthenticatedUser().getAutorizzato()) {
+            itinerario.setValidato(true);
+        }
 
         Users user = itinerario.getPercorso().getFirst().getComune().getCuratore();
         notifyObservers(user, "Itinerario creato");
@@ -65,6 +73,7 @@ public class ItinerarioService extends Publisher {
 
     public Itinerario read(Long id) {
         return itinerarioRepository.findById(id)
+                .filter(Itinerario::isValidato)
                 .orElseThrow(() -> new RuntimeException("itinerario non trovato."));
 
     }
@@ -74,9 +83,13 @@ public class ItinerarioService extends Publisher {
             c.setNome(itinerarioDto.getNome());
             c.setDescrizione(itinerarioDto.getDescrizione());
             c.setDistanza(itinerarioDto.getDistanza());
-            c.setPercorso(itinerarioDto.getPercorso());
-            c.setMaterialiMultimediali(itinerarioDto.getMaterialiMultimediali());
-            c.setAutore(itinerarioDto.getAutore());
+            c.setPercorso(itinerarioDto.getPercorso()
+                    .stream()
+                    .map(
+                            p -> poiRepository.findById(p)
+                                    .orElseThrow(() -> new RuntimeException("POI non trovato."))
+                    ).toList());
+            c.setAutore(userService.read(itinerarioDto.getAutore()));
             return itinerarioRepository.save(c);
         }).orElseThrow(() -> new RuntimeException("itinerario non trovato."));
     }
@@ -90,11 +103,14 @@ public class ItinerarioService extends Publisher {
     }
 
     public List<Itinerario> getAll() {
-        return itinerarioRepository.findAll();
+        return itinerarioRepository.findAll()
+                .stream().filter(Itinerario::isValidato).toList();
     }
 
     public Itinerario addPointOfInterest(Long itinerarioId, Long poiId) {
-        return itinerarioRepository.findById(itinerarioId).map(i -> {
+        return itinerarioRepository.findById(itinerarioId)
+                .filter(Itinerario::isValidato)
+                .map(i -> {
                     List<POI> percorso = i.getPercorso();
                     POI poi = poiRepository.findById(poiId)
                             .orElseThrow(() -> new RuntimeException("POI non trovato"));
@@ -106,7 +122,9 @@ public class ItinerarioService extends Publisher {
     }
 
     public Itinerario removePointOfInterest(Long itinerarioId, Long poiId) {
-        return itinerarioRepository.findById(itinerarioId).map(i -> {
+        return itinerarioRepository.findById(itinerarioId)
+                .filter(Itinerario::isValidato)
+                .map(i -> {
                     List<POI> percorso = i.getPercorso();
                     POI poiToRemove = poiRepository.findById(poiId)
                             .orElseThrow(() -> new RuntimeException("POI non trovato"));
@@ -120,7 +138,9 @@ public class ItinerarioService extends Publisher {
     }
 
     public Itinerario addMaterialeMultimediale(Long itinerarioId, MaterialeMultimedialeDto materialeMultimedialeDto) {
-        return itinerarioRepository.findById(itinerarioId).map(i -> {
+        return itinerarioRepository.findById(itinerarioId)
+                .filter(Itinerario::isValidato)
+                .map(i -> {
             MaterialeMultimediale materialeMultimediale = new MaterialeMultimediale(
                     materialeMultimedialeDto.getTipo(),
                     i,
@@ -135,15 +155,22 @@ public class ItinerarioService extends Publisher {
     }
 
     public Itinerario validateItinerario(Long itinerarioId) {
-        return itinerarioRepository.findById(itinerarioId).map(i -> {
-            i.setValidato(true);
-            return itinerarioRepository.save(i);
-        }).orElseThrow(() -> new RuntimeException("itinerario non trovato."));
+        return itinerarioRepository.findById(itinerarioId)
+                .filter(i -> !i.isValidato())
+                .map(i -> {
+                    i.setValidato(true);
+                    return itinerarioRepository.save(i);
+                })
+                .orElseThrow(() -> new RuntimeException("itinerario non trovato."));
     }
 
     private void checkComunePOI(ItinerarioDto itinerarioDto) {
-        Comune comune = itinerarioDto.getPercorso().getFirst().getComune();
-        for (POI poi : itinerarioDto.getPercorso()) {
+        List<POI> percorso = itinerarioDto.getPercorso().stream().map(
+                p -> poiRepository.findById(p)
+                        .orElseThrow(() -> new RuntimeException("POI non trovato."))
+        ).toList();
+        Comune comune = percorso.getFirst().getComune();
+        for (POI poi : percorso) {
             if (poi.getComune() != comune)
                 throw new RuntimeException("I POI che compongono l'itinerario devono appartenere alla stesso comune");
         }

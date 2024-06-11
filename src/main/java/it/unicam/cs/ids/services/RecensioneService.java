@@ -1,5 +1,6 @@
 package it.unicam.cs.ids.services;
 
+import it.unicam.cs.ids.dto.RecensioneDto;
 import it.unicam.cs.ids.model.POI.POI;
 import it.unicam.cs.ids.model.Recensione;
 import it.unicam.cs.ids.repository.POIRepository;
@@ -21,12 +22,13 @@ public class RecensioneService {
     @Autowired
     private UserService userService;
 
-    public Recensione create(Recensione recensione) {
+    public Recensione create(RecensioneDto recensioneDto) {
         Recensione recensioneToCreate = new Recensione(
-                recensione.getCommento(),
-                recensione.getVoto(),
-                recensione.getPoi(),
-                recensione.getAutore()
+                recensioneDto.getCommento(),
+                recensioneDto.getVoto(),
+                poiRepository.findById(recensioneDto.getPoiId())
+                        .orElseThrow(() -> new RuntimeException("POI non trovato.")),
+                userService.read(recensioneDto.getAutoreId())
         );
         return recensioneRepository.save(recensioneToCreate);
     }

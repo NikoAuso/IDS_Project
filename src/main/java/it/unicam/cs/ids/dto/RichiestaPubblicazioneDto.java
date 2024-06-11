@@ -8,5 +8,5 @@ import java.util.List;
 @Data
 public class RichiestaPubblicazioneDto {
     private List<Long> contenuti;
-    private List<PiattaformeSocial> socials;
+    private List<String> socials;
 }

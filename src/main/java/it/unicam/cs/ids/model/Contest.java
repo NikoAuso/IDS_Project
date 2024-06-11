@@ -31,7 +31,7 @@ public class Contest {
     private String tema;
 
     @Column(nullable = false)
-    private Boolean aperto;
+    private boolean aperto;
 
     private String linkInvito;
 
@@ -68,7 +68,7 @@ public class Contest {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime updatedAt;
 
-    public Contest(String nome, String descrizione, String tema, Boolean aperto, Users animatore, LocalDateTime dataInizio, LocalDateTime dataFine) {
+    public Contest(String nome, String descrizione, String tema, boolean aperto, Users animatore, LocalDateTime dataInizio, LocalDateTime dataFine) {
         this.nome = nome;
         this.descrizione = descrizione;
         this.tema = tema;

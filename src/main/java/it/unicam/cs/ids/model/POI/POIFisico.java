@@ -28,11 +28,12 @@ public class POIFisico extends POI {
     private String contatti;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private TipoCategoriePOIFisico categoria;
+    private TipoCategoriePOIFisico categoriaFisico;
 
-    public POIFisico(String nome, String descrizione, Comune comune, double longitudine, double latitudine, String indirizzo, LocalTime orariDiApertura, LocalTime orariDiChiusura, String serviziDisponibili, String sitoWeb, String contatti, @NotNull TipoCategoriePOIFisico categoria) {
-        super(nome, descrizione, comune, longitudine, latitudine);
+    public POIFisico(String nome, String descrizione, Comune comune, double longitudine, double latitudine,
+                     String indirizzo, LocalTime orariDiApertura, LocalTime orariDiChiusura, String serviziDisponibili,
+                     String sitoWeb, String contatti, @NotNull TipoCategoriePOIFisico categoria, boolean validato) {
+        super(nome, descrizione, comune, longitudine, latitudine, validato);
 
         this.indirizzo = indirizzo;
         this.orariDiApertura = orariDiApertura;
@@ -41,7 +42,7 @@ public class POIFisico extends POI {
         this.sitoWeb = sitoWeb;
         this.contatti = contatti;
 
-        this.categoria = categoria;
+        this.categoriaFisico = categoria;
     }
 
     @Override

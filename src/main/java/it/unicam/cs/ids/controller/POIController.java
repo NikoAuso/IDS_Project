@@ -6,6 +6,7 @@ import it.unicam.cs.ids.services.POIService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +41,7 @@ public class POIController {
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('CONTRIBUTOR', 'CURATORE')")
     @PostMapping("/api/poi")
     public ResponseEntity<?> createPOI(@RequestBody @Valid POIDto poiDto, BindingResult result) {
         if (result.hasErrors()) {
@@ -53,6 +55,7 @@ public class POIController {
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('CURATORE')")
     @PutMapping("/api/poi/{id}")
     public ResponseEntity<?> updatePOI(@RequestBody @Valid POIDto poiDto, @PathVariable Long id, BindingResult result) {
         if (result.hasErrors()) {
@@ -66,6 +69,7 @@ public class POIController {
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('CURATORE')")
     @DeleteMapping("/api/poi/{id}")
     public ResponseEntity<?> deletePOI(@PathVariable Long id) {
         try {
@@ -75,6 +79,7 @@ public class POIController {
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('CURATORE')")
     @PostMapping("/api/poi/{poiId}/validate")
     public ResponseEntity<?> validatePOI(@PathVariable Long poiId) {
         try {

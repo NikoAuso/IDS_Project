@@ -1,6 +1,11 @@
 package it.unicam.cs.ids.services;
 
+import it.unicam.cs.ids.dto.ComuneDto;
+import it.unicam.cs.ids.dto.NewUserDto;
+import it.unicam.cs.ids.dto.RuoloUpdateDto;
 import it.unicam.cs.ids.dto.UserRegistrationDto;
+import it.unicam.cs.ids.enumeration.Ruoli;
+import it.unicam.cs.ids.model.Comune;
 import it.unicam.cs.ids.model.Users;
 import it.unicam.cs.ids.repository.POIRepository;
 import it.unicam.cs.ids.repository.UserRepository;
@@ -26,6 +31,8 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private ComuneService comuneService;
 
     public Users create(UserRegistrationDto userRegistrationDto) {
         if (userRepository.findByUsername(userRegistrationDto.getUsername()).isPresent()) {
@@ -43,6 +50,24 @@ public class UserService implements UserDetailsService {
                 userRegistrationDto.getUsername(),
                 passwordEncoder.encode(userRegistrationDto.getPassword())
         );
+
+        return userRepository.save(user);
+    }
+
+    public Users create(NewUserDto newUserDto) {
+        if (userRepository.findByUsername(newUserDto.getUsername()).isPresent()) {
+            throw new RuntimeException("l'utente esiste già.");
+        }
+
+        Users user = new Users(
+                newUserDto.getNome(),
+                newUserDto.getCognome(),
+                newUserDto.getEmail(),
+                newUserDto.getUsername(),
+                passwordEncoder.encode(newUserDto.getPassword())
+        );
+        user.setRuolo(Ruoli.valueOf(newUserDto.getRuolo().toUpperCase()));
+        user.setAutorizzato(newUserDto.isAutorizzato());
 
         return userRepository.save(user);
     }
@@ -84,6 +109,40 @@ public class UserService implements UserDetailsService {
                         .orElseThrow(() -> new RuntimeException("POI non trovato."))
         );
         return userRepository.save(user);
+    }
+
+    public Users removePOIFromPreferiti(Long poiId, Users user) {
+        user.getPreferiti().remove(
+                poiRepository.findById(poiId)
+                        .orElseThrow(() -> new RuntimeException("POI non trovato."))
+        );
+        return userRepository.save(user);
+    }
+
+    public Users updateRuolo(Long userId, RuoloUpdateDto ruolo) {
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("utente non trovato."));
+        try {
+            if(Ruoli.valueOf(ruolo.getRuolo().toUpperCase()).equals(Ruoli.ADMIN)) {
+                throw new RuntimeException("non è possibile assegnare il ruolo ADMIN.");
+            }
+            user.setRuolo(Ruoli.valueOf(ruolo.getRuolo().toUpperCase()));
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("ruolo non valido: " + ruolo);
+        }
+
+        return userRepository.save(user);
+    }
+
+    public Users createCuratore(Long userId, ComuneDto comuneDto) {
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("utente non trovato."));
+        user.setRuolo(Ruoli.CURATORE);
+
+        comuneService.create(comuneDto, user);
+
+        return userRepository.save(user);
+
     }
 
     public Users getAuthenticatedUser() {

@@ -110,6 +110,21 @@ public class RichiesteService {
         }).orElseThrow(() -> new RuntimeException("Richiesta non trovata."));
     }
 
+    public AvanzamentoRuolo validateAvanzamentoRuolo(Long id) {
+        return avanzamentoRuoloRepository.findById(id).map(richiesta -> {
+            richiesta.setStatoAvanzamento(StatusRichieste.APPROVED);
+            return avanzamentoRuoloRepository.save(richiesta);
+        }).orElseThrow(() -> new RuntimeException("Richiesta non trovata."));
+    }
+
+    public AvanzamentoRuolo denyAvanzamentoRuolo(Long id, String motivazione) {
+        return avanzamentoRuoloRepository.findById(id).map(richiesta -> {
+            richiesta.setStatoAvanzamento(StatusRichieste.REFUSED);
+            richiesta.setMotivazione(motivazione);
+            return avanzamentoRuoloRepository.save(richiesta);
+        }).orElseThrow(() -> new RuntimeException("Richiesta non trovata."));
+    }
+
     public void deleteAvanzamentoRuolo(Long id) {
         if (avanzamentoRuoloRepository.existsById(id)) {
             avanzamentoRuoloRepository.deleteById(id);
@@ -164,11 +179,6 @@ public class RichiesteService {
 
     // RICHIESTA MODIFICA CONTENUTO
     public ModificaContenuto createModificaContenuto(ModificaContenutoDto modificaContenutoDto) {
-        if (contenutoRepository.findById(modificaContenutoDto.getContenuto())
-                .orElseThrow(() -> new RuntimeException("contenuto non trovato")) == null) {
-            throw new RuntimeException("Contenuto non trovato.");
-        }
-
         Contenuto contenuto = contenutoRepository.findById(modificaContenutoDto.getContenuto())
                 .orElseThrow(() -> new RuntimeException("Contenuto non trovato"));
 
@@ -187,27 +197,36 @@ public class RichiesteService {
 
     public ModificaContenuto readModificaContenuto(Long id) {
         return modificaContenutoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Richiesta non trovata."));
+                .orElseThrow(() -> new RuntimeException("richiesta modifica contenuto non trovata."));
     }
 
     public ModificaContenuto updateModificaContenuto(Long id, ModificaContenutoDto modificaContenutoDto) {
         return modificaContenutoRepository.findById(id).map(richiesta -> {
+            richiesta.setStatoRichiesta(StatusRichieste.REFUSED);
             richiesta.setDescrizioneModifica(modificaContenutoDto.getDescrizioneModifica());
             return modificaContenutoRepository.save(richiesta);
-        }).orElseThrow(() -> new RuntimeException("Richiesta non trovata."));
+        }).orElseThrow(() -> new RuntimeException("richiesta modifica contenuto non trovata."));
     }
 
     public ModificaContenuto updateModificaContenuto(Long id, StatusRichieste statoRichiesta) {
         return modificaContenutoRepository.findById(id).map(richiesta -> {
             richiesta.setStatoRichiesta(statoRichiesta);
             return modificaContenutoRepository.save(richiesta);
-        }).orElseThrow(() -> new RuntimeException("Modifica contenuto non trovata."));
+        }).orElseThrow(() -> new RuntimeException("richiesta modifica contenuto non trovata."));
     }
 
     // RICHIESTA ELIMINAZIONE CONTENUTO
     public EliminazioneContenuto createEliminazioneContenuto(EliminazioneContenutoDto eliminazioneContenutoDto) {
-        // do nothing
-        return null;
+        Contenuto contenuto = contenutoRepository.findById(eliminazioneContenutoDto.getContenuto())
+                .orElseThrow(() -> new RuntimeException("contenuto non trovato"));
+
+        EliminazioneContenuto eliminazioneContenuto = new EliminazioneContenuto(
+                userService.getAuthenticatedUser(),
+                contenuto,
+                eliminazioneContenutoDto.getDescrizioneEliminazione()
+        );
+
+        return eliminazioneContenutoRepository.save(eliminazioneContenuto);
     }
 
     public List<EliminazioneContenuto> readEliminazioneContenuto() {
@@ -221,7 +240,7 @@ public class RichiesteService {
 
     public EliminazioneContenuto updateEliminazioneContenuto(Long id, EliminazioneContenutoDto eliminazioneContenutoDto) {
         return eliminazioneContenutoRepository.findById(id).map(richiesta -> {
-            richiesta.setMotivazioneEliminazione(eliminazioneContenutoDto.getMotivazioneEliminazione());
+            richiesta.setMotivazioneEliminazione(eliminazioneContenutoDto.getDescrizioneEliminazione());
             return eliminazioneContenutoRepository.save(richiesta);
         }).orElseThrow(() -> new RuntimeException("Richiesta non trovata."));
     }
@@ -236,7 +255,7 @@ public class RichiesteService {
     public EliminazioneContenuto updateEliminazioneContenuto(Long id, StatusRichieste statoRichiesta, EliminazioneContenutoDto eliminazioneContenutoDto) {
         return eliminazioneContenutoRepository.findById(id).map(richiesta -> {
             richiesta.setStatoRichiesta(statoRichiesta);
-            richiesta.setMotivazioneEliminazione(eliminazioneContenutoDto.getMotivazioneEliminazione());
+            richiesta.setMotivazioneEliminazione(eliminazioneContenutoDto.getDescrizioneEliminazione());
             return eliminazioneContenutoRepository.save(richiesta);
         }).orElseThrow(() -> new RuntimeException("Richiesta non trovata."));
     }
