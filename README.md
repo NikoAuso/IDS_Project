@@ -1,8 +1,9 @@
 <a href="https://nikoauso.github.io/IDS_Project/">
-<figure align="center">
-    <img src="https://nikoauso.github.io/IDS_Project/docs/Logo.jpg" alt="logo del progetto" height="200" style="border-radius: 30%; border: solid 3px #54b8c4">
-</figure>
+    <figure align="center">
+        <img src="https://nikoauso.github.io/IDS_Project/docs/Logo.jpg" alt="logo del progetto" height="200" style="border-radius: 30%; border: solid 3px #54b8c4">
+    </figure>
 </a>
+
 <hr/>
 
 # TurisTown
