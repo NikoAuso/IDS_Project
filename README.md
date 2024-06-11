@@ -1,7 +1,8 @@
+<a href="https://nikoauso.github.io/IDS_Project/">
 <figure align="center">
     <img src="https://nikoauso.github.io/IDS_Project/docs/Logo.jpg" alt="logo del progetto" height="200" style="border-radius: 30%; border: solid 3px #54b8c4">
 </figure>
-
+</a>
 <hr/>
 
 # TurisTown
@@ -59,13 +60,30 @@ Le varie iterazioni hanno dato origine ai seguenti artefatti:
   comportamento definito nei casi d'uso;
 - **Code Base**: il codice sorgente del progetto.
 
-### Iterazione 1
+### Iterazione 1 - IDEAZIONE
 
-### Iterazione 2
+Nel corso della prima iterazione abbiamo effettuato l'analisi dei requisiti del progetto, che hanno poi gettato le basi
+del sistema.
+A seguire abbiamo definito il diagramma dei casi d'uso, dettagliandone le varie descrizioni e funzionalità, per poi
+terminare l'iterazione con la prima stesura del diagramma delle classi di analisi, dove abbiamo indicato le
+caratteristiche e le relazioni tra le varie entità richiamate dal sistema.
 
-### Iterazione 3
+### Iterazione 2 - ELABORAZIONE
 
-##   
+Durante la seconda iterazione abbiamo proseguito la dettagliazione del diagramma dei casi d'uso, inserendo le pre e post
+condizioni necessarie, e definendone il flow of events. Inoltre abbia adattato il diagramma delle classi di analisi alle
+modifiche apportate al progetto, dovute dalla rielaborazione di alcune idee.
+Siamo andati a definire il diagramma delle classi di progetto, di pari passo con l'implementazione delle classi su
+IntelliJ e abbiamo terminato l'iterazione andando a iniziare a creare il diagramma di sequenza per ogni caso d'uso
+inserito.
+
+### Iterazione 3 - COSTRUZIONE
+
+Nella terza iterazione abbiamo terminato la creazione dei diagrammi di sequenza e siamo andati a definire in maniera
+definitiva il diagramma delle classi di progetto con le relative implementazioni del codice.
+Abbiamo iniziato a lavorare sul backend del progetto, utilizzando Spring Boot e H2 per la persistenza dei dati.
+Abbiamo inoltre implementato le API REST, documentate tramite Swagger, e abbiamo iniziato a testare le API tramite
+l'applicativo Postman per eseguire i test.
 
 ## Tecnologie e strumenti utilizzati
 
