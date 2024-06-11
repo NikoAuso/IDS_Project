@@ -29,9 +29,10 @@ public class ItinerarioService extends Publisher {
     @Autowired
     private MaterialeMultimedialeRepository materialeMultimedialeRepository;
 
-    private final ObserverImpl observer = new ObserverImpl();
     @Autowired
     private UserService userService;
+
+    private final ObserverImpl observer = new ObserverImpl();
 
     public Itinerario create(ItinerarioDto itinerarioDto) {
         addObserver(observer);
@@ -79,6 +80,8 @@ public class ItinerarioService extends Publisher {
     }
 
     public Itinerario update(Long id, ItinerarioDto itinerarioDto) {
+        addObserver(observer);
+
         return itinerarioRepository.findById(id).map(c -> {
             c.setNome(itinerarioDto.getNome());
             c.setDescrizione(itinerarioDto.getDescrizione());
@@ -90,12 +93,22 @@ public class ItinerarioService extends Publisher {
                                     .orElseThrow(() -> new RuntimeException("POI non trovato."))
                     ).toList());
             c.setAutore(userService.read(itinerarioDto.getAutore()));
+            Users toNotify = c.getPercorso().getFirst().getComune().getCuratore();
+            notifyObservers(toNotify, "Itinerario modificato");
+            removeObserver(observer);
             return itinerarioRepository.save(c);
         }).orElseThrow(() -> new RuntimeException("itinerario non trovato."));
     }
 
     public void delete(Long id) {
         if (itinerarioRepository.existsById(id)) {
+            addObserver(observer);
+            Users toNotify = itinerarioRepository
+                    .findById(id)
+                    .orElseThrow(() -> new RuntimeException("itinerario non trovato."))
+                    .getPercorso().getFirst().getComune().getCuratore();
+            notifyObservers(toNotify, "Itinerario eliminato");
+            removeObserver(observer);
             itinerarioRepository.deleteById(id);
         } else {
             throw new RuntimeException("itinerario non trovato.");
@@ -116,6 +129,10 @@ public class ItinerarioService extends Publisher {
                             .orElseThrow(() -> new RuntimeException("POI non trovato"));
                     percorso.add(poi);
                     i.setPercorso(percorso);
+                    addObserver(observer);
+                    Users toNotify = i.getPercorso().getFirst().getComune().getCuratore();
+                    notifyObservers(toNotify, "POI aggiunto all'itinerario.");
+                    removeObserver(observer);
                     return itinerarioRepository.save(i);
                 })
                 .orElseThrow(() -> new RuntimeException("itinerario non trovato!"));
@@ -131,6 +148,10 @@ public class ItinerarioService extends Publisher {
             if (percorso.contains(poiToRemove)) {
                 percorso.remove(poiToRemove);
                 i.setPercorso(percorso);
+                addObserver(observer);
+                Users toNotify = i.getPercorso().getFirst().getComune().getCuratore();
+                notifyObservers(toNotify, "POI eliminato dall'itinerario.");
+                removeObserver(observer);
                 return itinerarioRepository.save(i);
             } else
                 throw new RuntimeException("POI non trovato nell'itinerario.");
@@ -150,6 +171,10 @@ public class ItinerarioService extends Publisher {
             List<MaterialeMultimediale> materialiMultimediali = i.getMaterialiMultimediali();
             materialiMultimediali.add(materialeMultimediale);
             i.setMaterialiMultimediali(materialiMultimediali);
+            addObserver(observer);
+            Users toNotify = i.getPercorso().getFirst().getComune().getCuratore();
+            notifyObservers(toNotify, "materiale aggiunto dall'itinerario.");
+            removeObserver(observer);
             return itinerarioRepository.save(i);
         }).orElseThrow(() -> new RuntimeException("itinerario non trovato"));
     }
@@ -159,6 +184,10 @@ public class ItinerarioService extends Publisher {
                 .filter(i -> !i.isValidato())
                 .map(i -> {
                     i.setValidato(true);
+                    addObserver(observer);
+                    Users toNotify = i.getPercorso().getFirst().getComune().getCuratore();
+                    notifyObservers(toNotify, "itinerario validato.");
+                    removeObserver(observer);
                     return itinerarioRepository.save(i);
                 })
                 .orElseThrow(() -> new RuntimeException("itinerario non trovato."));

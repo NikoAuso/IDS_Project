@@ -6,6 +6,8 @@ import it.unicam.cs.ids.enumeration.TipoContenuto;
 import it.unicam.cs.ids.model.POI.POI;
 import it.unicam.cs.ids.model.POI.contenuto.Contenuto;
 import it.unicam.cs.ids.model.Users;
+import it.unicam.cs.ids.observer.ObserverImpl;
+import it.unicam.cs.ids.observer.Publisher;
 import it.unicam.cs.ids.repository.ContenutoRepository;
 import it.unicam.cs.ids.repository.POIRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ContenutoService {
+public class ContenutoService extends Publisher {
 
     @Autowired
     private ContenutoRepository contenutoRepository;
@@ -25,8 +27,11 @@ public class ContenutoService {
     @Autowired
     private UserService userService;
 
+    private final ObserverImpl observer = new ObserverImpl();
 
     public Contenuto create(ContenutoDto contenutoDto) {
+        addObserver(observer);
+
         POI poi = poiRepository.findById(contenutoDto.getPoiId())
                 .orElseThrow(() -> new RuntimeException("POI non trovato."));
         Users autore = userService.read(contenutoDto.getAutoreId());
@@ -34,39 +39,40 @@ public class ContenutoService {
         Contenuto contenuto;
         TipoContenuto tipoContenuto = TipoContenuto.valueOf(contenutoDto.getTipo());
 
-        return switch (tipoContenuto) {
-            case TipoContenuto.TEMPORIZZATO -> {
-                contenuto = new Contenuto.Builder()
-                        .setPOI(poi)
-                        .setTipo(tipoContenuto)
-                        .setCategoria(TipoCategoriaContenuto.valueOf(contenutoDto.getCategoria().toUpperCase()))
-                        .setAutore(autore)
-                        .setTitolo(contenutoDto.getTitolo())
-                        .setDescrizione(contenutoDto.getDescrizione())
-                        .setUrl(contenutoDto.getUrl())
-                        .setDataInizio(contenutoDto.getDataInizio())
-                        .setDataFine(contenutoDto.getDataFine())
-                        .setNote(contenutoDto.getNote())
-                        .setValidato(userService.getAuthenticatedUser().getAutorizzato()) // basandosi sui dettagli dell'utente autenticato preso dalla sessione
-                        .build();
-                yield contenutoRepository.save(contenuto); // basandosi sui dettagli dell'utente autenticato preso dalla sessione
-            }
-            case TipoContenuto.STATICO -> {
-                contenuto = new Contenuto.Builder()
-                        .setPOI(poi)
-                        .setTipo(tipoContenuto)
-                        .setCategoria(TipoCategoriaContenuto.valueOf(contenutoDto.getCategoria().toUpperCase()))
-                        .setAutore(autore)
-                        .setTitolo(contenutoDto.getTitolo())
-                        .setDescrizione(contenutoDto.getDescrizione())
-                        .setUrl(contenutoDto.getUrl())
-                        .setNote(contenutoDto.getNote())
-                        .setValidato(userService.getAuthenticatedUser().getAutorizzato()) // basandosi sui dettagli dell'utente autenticato preso dalla sessione
-                        .build();
-                yield contenutoRepository.save(contenuto); // basandosi sui dettagli dell'utente autenticato preso dalla sessione
-            }
+        switch (tipoContenuto) {
+            case TipoContenuto.TEMPORIZZATO -> contenuto = new Contenuto.Builder()
+                    .setPOI(poi)
+                    .setTipo(tipoContenuto)
+                    .setCategoria(TipoCategoriaContenuto.valueOf(contenutoDto.getCategoria().toUpperCase()))
+                    .setAutore(autore)
+                    .setTitolo(contenutoDto.getTitolo())
+                    .setDescrizione(contenutoDto.getDescrizione())
+                    .setUrl(contenutoDto.getUrl())
+                    .setDataInizio(contenutoDto.getDataInizio())
+                    .setDataFine(contenutoDto.getDataFine())
+                    .setNote(contenutoDto.getNote())
+                    .setValidato(userService.getAuthenticatedUser().getAutorizzato()) // basandosi sui dettagli dell'utente autenticato preso dalla sessione
+                    .build();
+            case TipoContenuto.STATICO -> contenuto = new Contenuto.Builder()
+                    .setPOI(poi)
+                    .setTipo(tipoContenuto)
+                    .setCategoria(TipoCategoriaContenuto.valueOf(contenutoDto.getCategoria().toUpperCase()))
+                    .setAutore(autore)
+                    .setTitolo(contenutoDto.getTitolo())
+                    .setDescrizione(contenutoDto.getDescrizione())
+                    .setUrl(contenutoDto.getUrl())
+                    .setNote(contenutoDto.getNote())
+                    .setValidato(userService.getAuthenticatedUser().getAutorizzato()) // basandosi sui dettagli dell'utente autenticato preso dalla sessione
+                    .build();
             default -> throw new RuntimeException("tipo contenuto non valido.");
-        };
+        }
+
+        Users toNotify = contenuto.getPoi().getComune().getCuratore();
+        notifyObservers(toNotify, "Contenuto creato");
+
+        removeObserver(observer);
+
+        return contenutoRepository.save(contenuto);
     }
 
     public Contenuto read(Long id) {

@@ -28,9 +28,10 @@ public class POIService extends Publisher {
     @Autowired
     private ComuneRepository comuneRepository;
 
-    private final ObserverImpl observer = new ObserverImpl();
     @Autowired
     private UserService userService;
+
+    private final ObserverImpl observer = new ObserverImpl();
 
     public POI create(POIDto poi, TipoPOI tipoPOI, Long comuneId) {
         addObserver(observer);
@@ -94,7 +95,6 @@ public class POIService extends Publisher {
                             .orElseThrow(() -> new RuntimeException("comune non trovato."))
                             .getCuratore();
                     notifyObservers(user, "POI eliminato");
-
                     removeObserver(observer);
 
                     return p;
@@ -115,6 +115,10 @@ public class POIService extends Publisher {
                 .filter(p -> !p.isValidato())
                 .map(p -> {
                     p.setValidato(true);
+                    addObserver(observer);
+                    Users toNotify = p.getComune().getCuratore();
+                    notifyObservers(toNotify, "POI validato");
+                    removeObserver(observer);
                     return poiRepository.save(p);
                 })
                 .orElseThrow(() -> new RuntimeException("POI non trovato."));

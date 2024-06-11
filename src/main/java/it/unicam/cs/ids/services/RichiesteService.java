@@ -5,7 +5,10 @@ import it.unicam.cs.ids.enumeration.Ruoli;
 import it.unicam.cs.ids.enumeration.StatusRichieste;
 import it.unicam.cs.ids.model.Comune;
 import it.unicam.cs.ids.model.POI.contenuto.Contenuto;
+import it.unicam.cs.ids.model.Users;
 import it.unicam.cs.ids.model.richieste.*;
+import it.unicam.cs.ids.observer.ObserverImpl;
+import it.unicam.cs.ids.observer.Publisher;
 import it.unicam.cs.ids.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class RichiesteService {
+public class RichiesteService extends Publisher {
 
     @Autowired
     private AccreditamentoCuratoreRepository accreditamentoCuratoreRepository;
@@ -35,8 +38,13 @@ public class RichiesteService {
 
     @Autowired
     private ModificaContenutoRepository modificaContenutoRepository;
+
     @Autowired
     private EliminazioneContenutoRepository eliminazioneContenutoRepository;
+
+    private final ObserverImpl observer = new ObserverImpl();
+    @Autowired
+    private UserRepository userRepository;
 
     // Richieste AccreditamentoCuratore
     public AccreditamentoCuratore createAccreditamentoCuratore(AccreditamentoCuratoreDto accreditamentoCuratoreDto) {
@@ -52,6 +60,12 @@ public class RichiesteService {
                 comune,
                 accreditamentoCuratoreDto.getCommento()
         );
+
+        addObserver(observer);
+        Users toNotify = userRepository.findByRuolo(Ruoli.ADMIN)
+                .orElseThrow(() -> new RuntimeException("Admin non trovato."));
+        notifyObservers(toNotify, "Richiesta di accreditamento come curatore ricevuta.");
+        removeObserver(observer);
 
         return accreditamentoCuratoreRepository.save(richiesta);
     }
@@ -89,6 +103,12 @@ public class RichiesteService {
                 Ruoli.valueOf(avanzamentoRuoloDto.getRuoloRichiesto()),
                 avanzamentoRuoloDto.getCommento()
         );
+
+        addObserver(observer);
+        Users toNotify = userRepository.findByRuolo(Ruoli.ADMIN)
+                .orElseThrow(() -> new RuntimeException("Admin non trovato."));
+        notifyObservers(toNotify, "Richiesta di avanzamento ruolo ricevuta");
+        removeObserver(observer);
 
         return avanzamentoRuoloRepository.save(richiesta);
     }
@@ -133,7 +153,7 @@ public class RichiesteService {
         }
     }
 
-    // CRUD methods for Segnalazione
+    // Richiesta Segnalazione contenuto
     public Segnalazione createSegnalazione(SegnalazioneDto segnalazioneDto) {
         if (contenutoRepository.findById(segnalazioneDto.getContenutoId())
                 .orElseThrow(() -> new RuntimeException("Contenuto non trovato")) == null) {
@@ -148,6 +168,12 @@ public class RichiesteService {
                 segnalazioneDto.getCommento(),
                 userService.getAuthenticatedUser()
         );
+
+        addObserver(observer);
+        Users toNotify = userRepository.findByRuolo(Ruoli.ADMIN)
+                .orElseThrow(() -> new RuntimeException("Admin non trovato."));
+        notifyObservers(toNotify, "Richiesta di segnalazione di contenuto ricevuta.");
+        removeObserver(observer);
 
         return segnalazioneRepository.save(segnalazione);
     }
@@ -188,6 +214,12 @@ public class RichiesteService {
                 modificaContenutoDto.getDescrizioneModifica()
         );
 
+        addObserver(observer);
+        Users toNotify = userRepository.findByRuolo(Ruoli.ADMIN)
+                .orElseThrow(() -> new RuntimeException("Admin non trovato."));
+        notifyObservers(toNotify, "Richiesta di modifica del contenuto ricevuta.");
+        removeObserver(observer);
+
         return modificaContenutoRepository.save(modificaContenuto);
     }
 
@@ -225,6 +257,12 @@ public class RichiesteService {
                 contenuto,
                 eliminazioneContenutoDto.getDescrizioneEliminazione()
         );
+
+        addObserver(observer);
+        Users toNotify = userRepository.findByRuolo(Ruoli.ADMIN)
+                .orElseThrow(() -> new RuntimeException("Admin non trovato."));
+        notifyObservers(toNotify, "Richiesta di elimanzione di contenuto ricevuta.");
+        removeObserver(observer);
 
         return eliminazioneContenutoRepository.save(eliminazioneContenuto);
     }

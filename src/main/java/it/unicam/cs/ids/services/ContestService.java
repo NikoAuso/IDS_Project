@@ -4,7 +4,6 @@ import it.unicam.cs.ids.dto.ContenutoDto;
 import it.unicam.cs.ids.dto.ContestDto;
 import it.unicam.cs.ids.enumeration.Ruoli;
 import it.unicam.cs.ids.model.Contest;
-import it.unicam.cs.ids.model.POI.POI;
 import it.unicam.cs.ids.model.POI.contenuto.Contenuto;
 import it.unicam.cs.ids.model.POI.contenuto.ContenutoContest;
 import it.unicam.cs.ids.model.Users;
@@ -21,10 +20,13 @@ public class ContestService {
 
     @Autowired
     private ContestRepository contestRepository;
+
     @Autowired
     private UserService userService;
+
     @Autowired
     private ContenutoRepository contenutoRepository;
+
     @Autowired
     private ContenutoService contenutoService;
 

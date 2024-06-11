@@ -5,7 +5,6 @@ import it.unicam.cs.ids.dto.NewUserDto;
 import it.unicam.cs.ids.dto.RuoloUpdateDto;
 import it.unicam.cs.ids.dto.UserRegistrationDto;
 import it.unicam.cs.ids.enumeration.Ruoli;
-import it.unicam.cs.ids.model.Comune;
 import it.unicam.cs.ids.model.Users;
 import it.unicam.cs.ids.repository.POIRepository;
 import it.unicam.cs.ids.repository.UserRepository;
@@ -30,7 +29,8 @@ public class UserService implements UserDetailsService {
     private POIRepository poiRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder
+            ;
     @Autowired
     private ComuneService comuneService;
 
