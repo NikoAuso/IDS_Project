@@ -60,29 +60,28 @@ Le varie iterazioni hanno dato origine ai seguenti artefatti:
   comportamento definito nei casi d'uso;
 - **Code Base**: il codice sorgente del progetto.
 
-### Iterazione 1 - IDEAZIONE
-
+### Iterazione 1
 Nel corso della prima iterazione abbiamo effettuato l'analisi dei requisiti del progetto, che hanno poi gettato le basi
 del sistema.
 A seguire abbiamo definito il diagramma dei casi d'uso, dettagliandone le varie descrizioni e funzionalità, per poi
-terminare l'iterazione con la prima stesura del diagramma delle classi di analisi, dove abbiamo indicato le
+terminare l'iterazione con la prima stesura del diagramma delle classi di analisi, dove abbiamo rappresentato le
 caratteristiche e le relazioni tra le varie entità richiamate dal sistema.
 
-### Iterazione 2 - ELABORAZIONE
+### Iterazione 2
 
-Durante la seconda iterazione abbiamo proseguito la dettagliazione del diagramma dei casi d'uso, inserendo le pre e post
-condizioni necessarie, e definendone il flow of events. Inoltre abbia adattato il diagramma delle classi di analisi alle
-modifiche apportate al progetto, dovute dalla rielaborazione di alcune idee.
+Durante la seconda iterazione abbiamo proseguito dettagliando più nello specifico il diagramma dei casi d'uso, inserendo
+le pre e post condizioni necessarie, e definendo le sequenze degli eventi principali. Inoltre abbiamo adattato il
+diagramma delle classi di analisi alle modifiche apportate al progetto, dovute dalla rielaborazione di alcune idee.
 Siamo andati a definire il diagramma delle classi di progetto, di pari passo con l'implementazione delle classi su
-IntelliJ e abbiamo terminato l'iterazione andando a iniziare a creare il diagramma di sequenza per ogni caso d'uso
-inserito.
+IntelliJ e abbiamo terminato l'iterazione creando il diagramma di sequenza per alcuni casi d'uso.
 
-### Iterazione 3 - COSTRUZIONE
+### Iterazione 3
 
-Nella terza iterazione abbiamo terminato la creazione dei diagrammi di sequenza e siamo andati a definire in maniera
+Nella terza iterazione abbiamo terminato la creazione dei diagrammi di sequenza e siamo andati a completare in maniera
 definitiva il diagramma delle classi di progetto con le relative implementazioni del codice.
-Abbiamo iniziato a lavorare sul backend del progetto, utilizzando Spring Boot e H2 per la persistenza dei dati.
-Abbiamo inoltre implementato le API REST, documentate tramite Swagger, e abbiamo iniziato a testare le API tramite
+Abbiamo scelto di utilizzare Gradle come strumento di build automation per la gestione delle dipendenze del progetto e
+H2 come database per la persistenza dei dati. Abbiamo poi migrato il backend del progetto su Spring Boot.
+Inoltre, abbiamo implementato le API REST, documentate tramite Swagger, e abbiamo iniziato a testare le API tramite
 l'applicativo Postman per eseguire i test.
 
 ## Tecnologie e strumenti utilizzati
@@ -115,15 +114,14 @@ documentazione presente su Postman.
 
 **Prerequisiti**
 
-- clonato la repository https://github.com/NikoAuso/IDS_Project.git
+- aver clonato la repository https://github.com/NikoAuso/IDS_Project.git
 - aver scaricato Gradle Build Tool
 
 **Installazione**
 
-1. aprire il terminale nella cartella del progetto
+1. aprire il terminale nella cartella del progetto clonato
 2. eseguire il comando `gradle build`
 3. eseguire il comando `gradle bootRun`
 4. per testare l'applicazione sono disponibili delle API Request
-   su [Postman](https://lively-trinity-134640.postman.co/workspace/IDS_Project-2024~f6af244c-b5c7-4183-9a54-adafcf9e233d/collection/16242130-fea3a4e8-0f18-4819-9345-57d114cde7b7?action=share&creator=16242130) (
-   necessario account su Postman) o tramite
-   [API Docs](http://localhost:8081/swagger-ui/index.html)
+   su [Postman](https://lively-trinity-134640.postman.co/workspace/IDS_Project-2024~f6af244c-b5c7-4183-9a54-adafcf9e233d/collection/16242130-fea3a4e8-0f18-4819-9345-57d114cde7b7?action=share&creator=16242130) (necessario account su Postman) o
+   tramite [API Docs](http://localhost:8081/swagger-ui/index.html)
