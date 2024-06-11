@@ -32,7 +32,6 @@ public class EliminazioneContenuto implements Richieste {
     /**
      * La motivazione dell'eventuale rifiuto della richiesta
      */
-    @Column(nullable = false)
     private String motivazione;
 
     /**

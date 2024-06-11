@@ -1,14 +1,12 @@
 package it.unicam.cs.ids.model.POI.contenuto;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import it.unicam.cs.ids.model.Contest;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
@@ -18,8 +16,14 @@ import lombok.NoArgsConstructor;
 @DiscriminatorValue("CONTEST")
 public class ContenutoContest extends Contenuto{
     @ManyToOne
-    @JoinColumn(name = "contest", nullable = false)
+    @JoinColumn(name = "contest")
+    @JsonBackReference
     private Contest contest;
 
     private String motivazione;
+
+    public ContenutoContest(Contenuto contenuto, Contest contest) {
+        super(contenuto.getTitolo(), contenuto.getDescrizione(), contenuto.getUrl(), contenuto.getNote(), contenuto.getAutore(), contenuto.getTipo(), contenuto.getCategoria(), contenuto.getPoi());
+        this.contest = contest;
+    }
 }

@@ -1,9 +1,13 @@
 package it.unicam.cs.ids.controller;
 
+import it.unicam.cs.ids.dto.RecensioneDto;
 import it.unicam.cs.ids.model.Recensione;
 import it.unicam.cs.ids.services.RecensioneService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,16 +41,20 @@ public class RecensioneController {
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('TURISTA', 'CONTRIBUTOR', 'CURATORE', 'ANIMATORE')")
     @PostMapping("/api/recensioni")
-    public ResponseEntity<?> create(@RequestBody Recensione recensione) {
+    public ResponseEntity<?> create(@RequestBody @Valid RecensioneDto recensioneDto, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body("Si sono verificati errori di validazione: " + result.getAllErrors());
+        }
         try {
-            return ResponseEntity.ok(recensioneService.create(recensione));
+            return ResponseEntity.ok(recensioneService.create(recensioneDto));
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Si è verificato un errore: " + e.getMessage());
         }
     }
 
-
+    @PreAuthorize("hasAnyAuthority('TURISTA', 'CONTRIBUTOR', 'CURATORE', 'ANIMATORE')")
     @PutMapping("/update/{id}")
     public ResponseEntity<Recensione> updateRecensione(@PathVariable Long id,
                                                        @RequestParam String commento,
@@ -55,6 +63,7 @@ public class RecensioneController {
         return ResponseEntity.ok(updatedRecensione);
     }
 
+    @PreAuthorize("hasAnyAuthority('TURISTA', 'CONTRIBUTOR', 'CURATORE', 'ANIMATORE')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteRecensione(@PathVariable Long id) {
         recensioneService.delete(id);

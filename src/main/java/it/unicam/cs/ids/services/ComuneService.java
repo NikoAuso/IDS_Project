@@ -42,6 +42,28 @@ public class ComuneService {
         return comuneRepository.save(comune);
     }
 
+    public Comune create(ComuneDto comuneDto, Users curatore) {
+        if (comuneRepository.findComuneByCap(comuneDto.getCap()).isPresent()) {
+            throw new RuntimeException("il comune esiste già.");
+        }
+
+        if (comuneRepository.findComuneByCuratore(
+                        userRepository.findById(comuneDto.getCuratore())
+                                .orElseThrow(() -> new RuntimeException("utente non trovato")))
+                .isPresent())
+            throw new RuntimeException("l'utente è già curatore di un comune.");
+
+        Comune comune = new Comune(
+                comuneDto.getCap(),
+                comuneDto.getNome(),
+                comuneDto.getRegione(),
+                comuneDto.getProvincia(),
+                curatore
+        );
+
+        return comuneRepository.save(comune);
+    }
+
     public List<Comune> read() {
         return comuneRepository.findAll();
     }

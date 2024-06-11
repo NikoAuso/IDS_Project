@@ -34,8 +34,8 @@ public class ContenutoService {
         Contenuto contenuto;
         TipoContenuto tipoContenuto = TipoContenuto.valueOf(contenutoDto.getTipo());
 
-        switch (tipoContenuto) {
-            case TipoContenuto.TEMPORIZZATO:
+        return switch (tipoContenuto) {
+            case TipoContenuto.TEMPORIZZATO -> {
                 contenuto = new Contenuto.Builder()
                         .setPOI(poi)
                         .setTipo(tipoContenuto)
@@ -49,8 +49,9 @@ public class ContenutoService {
                         .setNote(contenutoDto.getNote())
                         .setValidato(userService.getAuthenticatedUser().getAutorizzato()) // basandosi sui dettagli dell'utente autenticato preso dalla sessione
                         .build();
-                contenutoRepository.save(contenuto);
-            case TipoContenuto.STATICO:
+                yield contenutoRepository.save(contenuto); // basandosi sui dettagli dell'utente autenticato preso dalla sessione
+            }
+            case TipoContenuto.STATICO -> {
                 contenuto = new Contenuto.Builder()
                         .setPOI(poi)
                         .setTipo(tipoContenuto)
@@ -62,10 +63,10 @@ public class ContenutoService {
                         .setNote(contenutoDto.getNote())
                         .setValidato(userService.getAuthenticatedUser().getAutorizzato()) // basandosi sui dettagli dell'utente autenticato preso dalla sessione
                         .build();
-                contenutoRepository.save(contenuto);
-            default:
-                throw new RuntimeException("tipo contenuto non valido.");
-        }
+                yield contenutoRepository.save(contenuto); // basandosi sui dettagli dell'utente autenticato preso dalla sessione
+            }
+            default -> throw new RuntimeException("tipo contenuto non valido.");
+        };
     }
 
     public Contenuto read(Long id) {
@@ -74,6 +75,9 @@ public class ContenutoService {
     }
 
     public Contenuto update(Long id, ContenutoDto contenutoDto) {
+        if (!userService.getAuthenticatedUser().getAutorizzato())
+            throw new RuntimeException("utente non autorizzato.");
+
         Contenuto contenuto = contenutoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("contenuto non trovato."));
 
@@ -104,9 +108,12 @@ public class ContenutoService {
     }
 
     public Contenuto validate(Long contenutoId) {
-        return contenutoRepository.findById(contenutoId).map(c -> {
-            c.setValidato(true);
-            return contenutoRepository.save(c);
-        }).orElseThrow(() -> new RuntimeException("contenuto non trovato."));
+        return contenutoRepository.findById(contenutoId)
+                .filter(c -> !c.isValidato())
+                .map(c -> {
+                    c.setValidato(true);
+                    return contenutoRepository.save(c);
+                })
+                .orElseThrow(() -> new RuntimeException("contenuto non trovato."));
     }
 }

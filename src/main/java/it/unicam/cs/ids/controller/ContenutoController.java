@@ -2,6 +2,7 @@ package it.unicam.cs.ids.controller;
 
 import it.unicam.cs.ids.dto.ContenutoDto;
 import it.unicam.cs.ids.dto.RichiestaPubblicazioneDto;
+import it.unicam.cs.ids.enumeration.PiattaformeSocial;
 import it.unicam.cs.ids.model.POI.contenuto.Contenuto;
 import it.unicam.cs.ids.services.ContenutoService;
 import it.unicam.cs.ids.services.SocialService;
@@ -55,6 +56,7 @@ public class ContenutoController {
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('CONTRIBUTOR', 'CURATORE')")
     @PutMapping("/api/contenuti/{id}")
     public ResponseEntity<?> updateContenuto(@PathVariable Long id, @RequestBody ContenutoDto contenutoDto) {
         try {
@@ -64,6 +66,7 @@ public class ContenutoController {
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('CURATORE')")
     @DeleteMapping("/api/contenuti/{id}")
     public ResponseEntity<?> deleteContenuto(@PathVariable Long id) {
         try {
@@ -74,6 +77,7 @@ public class ContenutoController {
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('CURATORE')")
     @PostMapping("/api/contenuti/{id}/validate")
     public ResponseEntity<?> validateContenuto(@PathVariable Long id) {
         try {
@@ -83,6 +87,7 @@ public class ContenutoController {
         }
     }
 
+    @PreAuthorize("hasAnyAuthority('CURATORE')")
     @PutMapping("/api/contenuti/publish")
     public ResponseEntity<?> publishContenuto(@RequestBody RichiestaPubblicazioneDto richiestaPubblicazioneDto) {
         List<Contenuto> contenuti = richiestaPubblicazioneDto.getContenuti().stream()
@@ -90,13 +95,17 @@ public class ContenutoController {
                 .filter(Contenuto::isValidato)
                 .toList();
 
+        List<PiattaformeSocial> piattaformeSocials = richiestaPubblicazioneDto.getSocials()
+                .stream()
+                .map(PiattaformeSocial::valueOf)
+                .toList();
+
         if (contenuti.isEmpty()) {
             return ResponseEntity.status(500).body("Si è verificato un errore: uno o più contenuti non esistono o non sono stati validati.");
         }
 
         try {
-            return ResponseEntity.ok("Contenuti pubblicati con successo: " +
-                    socialMediaService.publishToSocialMedia(contenuti, richiestaPubblicazioneDto.getSocials()));
+            return ResponseEntity.ok(socialMediaService.publishToSocialMedia(contenuti, piattaformeSocials));
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Si è verificato un errore: " + e.getMessage());
         }

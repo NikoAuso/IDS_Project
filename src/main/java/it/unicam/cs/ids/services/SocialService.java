@@ -8,17 +8,19 @@ import java.util.List;
 
 @Service
 public class SocialService {
-    public String publishToSocialMedia(List<Contenuto> contenuti, List<PiattaformeSocial> socials) throws Exception {
-        for (Contenuto contenuto : contenuti) {
-            for (PiattaformeSocial platform : socials) {
-                return switch (platform) {
-                    case TWITTER -> String.format("Pubblicazione su Twitter: %s", contenuto.toString());
-                    case FACEBOOK -> String.format("Pubblicazione su Facebook: %s", contenuto.toString());
-                    case INSTAGRAM -> String.format("Pubblicazione su Instagram: %s", contenuto.toString());
-                    default -> throw new RuntimeException("piattaforma sconosciuta -> {" + platform + "}");
-                };
-            }
+    public String publishToSocialMedia(List<Contenuto> contenuti, List<PiattaformeSocial> socials) {
+        StringBuilder result = new StringBuilder();
+        for (PiattaformeSocial platform : socials) {
+            switch (platform) {
+                case TWITTER ->
+                        result.append(String.format("Pubblicazione su Twitter: %s\n", contenuti.stream().map(Contenuto::getTitolo).toList()));
+                case FACEBOOK ->
+                        result.append(String.format("Pubblicazione su Facebook: %s\n", contenuti.stream().map(Contenuto::getTitolo).toList()));
+                case INSTAGRAM ->
+                        result.append(String.format("Pubblicazione su Instagram: %s\n", contenuti.stream().map(Contenuto::getTitolo).toList()));
+                default -> throw new RuntimeException("piattaforma sconosciuta -> {" + platform + "}\n");
+            };
         }
-        return "Pubblicazione completata con successo!";
+        return result.toString();
     }
 }

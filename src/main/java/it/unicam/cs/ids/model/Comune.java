@@ -1,6 +1,8 @@
 package it.unicam.cs.ids.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import it.unicam.cs.ids.model.POI.POI;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,7 +35,7 @@ public class Comune {
     private Users curatore;
 
     @OneToMany(mappedBy = "poiId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    @JsonIdentityReference
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "poiId")
     private List<POI> poiList;
 
     @CreationTimestamp

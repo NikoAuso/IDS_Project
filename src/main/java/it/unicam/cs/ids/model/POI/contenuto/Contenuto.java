@@ -1,7 +1,6 @@
 package it.unicam.cs.ids.model.POI.contenuto;
 
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import it.unicam.cs.ids.enumeration.TipoCategoriaContenuto;
 import it.unicam.cs.ids.enumeration.TipoContenuto;
 import it.unicam.cs.ids.model.POI.POI;
@@ -36,7 +35,7 @@ public class Contenuto {
      */
     @ManyToOne
     @JoinColumn(name = "poi", nullable = false)
-    @JsonManagedReference
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "poiId")
     private POI poi;
 
     /**
@@ -58,7 +57,7 @@ public class Contenuto {
      */
     @ManyToOne
     @JoinColumn(name = "autore", nullable = false)
-    @JsonIdentityReference
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "userId")
     private Users autore;
 
     /**
@@ -79,7 +78,7 @@ public class Contenuto {
     @Column(nullable = false)
     private String descrizione;
 
-    // Campi aggiuntivi per altri tipi di contenuto
+    // Campi aggiuntivi per altri tipi di contenuto (facoltativi)
     private String url;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -91,7 +90,7 @@ public class Contenuto {
     private String note;
 
     @OneToMany(mappedBy = "richiestaId", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    @JsonIdentityReference
+    @JsonManagedReference
     private List<Segnalazione> segnalazioni;
 
     @CreationTimestamp
@@ -103,6 +102,17 @@ public class Contenuto {
     @Column(name = "updatedAt")
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime updatedAt;
+
+    public Contenuto(String titolo, String descrizione, String url, String note, Users autore, TipoContenuto tipo, TipoCategoriaContenuto categoria, POI poi) {
+        this.titolo = titolo;
+        this.descrizione = descrizione;
+        this.url = url;
+        this.note = note;
+        this.autore = autore;
+        this.tipo = tipo;
+        this.categoria = categoria;
+        this.poi = poi;
+    }
 
     public static class Builder {
         private POI poi;
@@ -125,7 +135,6 @@ public class Contenuto {
             this.poi = poi;
             return this;
         }
-
 
         public Builder setTipo(TipoContenuto tipo) {
             this.tipo = tipo;

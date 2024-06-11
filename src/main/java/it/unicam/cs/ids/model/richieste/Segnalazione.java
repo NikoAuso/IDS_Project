@@ -1,5 +1,7 @@
 package it.unicam.cs.ids.model.richieste;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import it.unicam.cs.ids.enumeration.StatusRichieste;
 import it.unicam.cs.ids.enumeration.TipoRichiesta;
 import it.unicam.cs.ids.model.POI.contenuto.Contenuto;
@@ -31,7 +33,6 @@ public class Segnalazione implements Richieste {
     /**
      * La motivazione dell'eventuale rifiuto della richiesta
      */
-    @Column(nullable = false)
     private String motivazione;
 
     /**
@@ -39,6 +40,7 @@ public class Segnalazione implements Richieste {
      */
     @ManyToOne
     @JoinColumn(name = "contenutoId", nullable = false)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "contenutoId")
     private Contenuto contenuto;
 
     /**
@@ -52,6 +54,7 @@ public class Segnalazione implements Richieste {
      */
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "userId")
     private Users autore;
 
     @CreationTimestamp
