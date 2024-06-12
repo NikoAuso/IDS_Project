@@ -3,7 +3,7 @@ package it.unicam.cs.ids.controller;
 import it.unicam.cs.ids.dto.ContenutoDto;
 import it.unicam.cs.ids.dto.ContestDto;
 import it.unicam.cs.ids.model.Contest;
-import it.unicam.cs.ids.model.POI.contenuto.ContenutoContest;
+import it.unicam.cs.ids.model.POI.ContenutoContest;
 import it.unicam.cs.ids.services.ContestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

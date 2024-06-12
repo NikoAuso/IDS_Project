@@ -1,4 +1,4 @@
-package it.unicam.cs.ids.model.POI.contenuto;
+package it.unicam.cs.ids.model.POI;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import it.unicam.cs.ids.model.Contest;
@@ -14,7 +14,7 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @DiscriminatorValue("CONTEST")
-public class ContenutoContest extends Contenuto{
+public class ContenutoContest extends Contenuto {
     @ManyToOne
     @JoinColumn(name = "contest")
     @JsonBackReference

@@ -1,7 +1,7 @@
 package it.unicam.cs.ids.services;
 
 import it.unicam.cs.ids.enumeration.PiattaformeSocial;
-import it.unicam.cs.ids.model.POI.contenuto.Contenuto;
+import it.unicam.cs.ids.model.POI.Contenuto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

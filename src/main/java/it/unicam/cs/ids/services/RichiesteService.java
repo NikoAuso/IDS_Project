@@ -4,7 +4,7 @@ import it.unicam.cs.ids.dto.*;
 import it.unicam.cs.ids.enumeration.Ruoli;
 import it.unicam.cs.ids.enumeration.StatusRichieste;
 import it.unicam.cs.ids.model.Comune;
-import it.unicam.cs.ids.model.POI.contenuto.Contenuto;
+import it.unicam.cs.ids.model.POI.Contenuto;
 import it.unicam.cs.ids.model.Users;
 import it.unicam.cs.ids.model.richieste.*;
 import it.unicam.cs.ids.observer.ObserverImpl;

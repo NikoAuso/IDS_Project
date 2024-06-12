@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.*;
 import it.unicam.cs.ids.enumeration.TipoPOI;
 import it.unicam.cs.ids.model.Comune;
 import it.unicam.cs.ids.model.Itinerario;
-import it.unicam.cs.ids.model.POI.contenuto.Contenuto;
 import it.unicam.cs.ids.model.Recensione;
 import it.unicam.cs.ids.model.Users;
 import jakarta.persistence.*;

@@ -1,7 +1,7 @@
 package it.unicam.cs.ids.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import it.unicam.cs.ids.model.POI.contenuto.ContenutoContest;
+import it.unicam.cs.ids.model.POI.ContenutoContest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,7 +1,6 @@
 package it.unicam.cs.ids.dto;
 
 import it.unicam.cs.ids.enumeration.StatusRichieste;
-import it.unicam.cs.ids.model.POI.contenuto.Contenuto;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

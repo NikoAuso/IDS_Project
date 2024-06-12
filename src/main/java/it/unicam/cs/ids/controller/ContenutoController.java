@@ -3,7 +3,7 @@ package it.unicam.cs.ids.controller;
 import it.unicam.cs.ids.dto.ContenutoDto;
 import it.unicam.cs.ids.dto.RichiestaPubblicazioneDto;
 import it.unicam.cs.ids.enumeration.PiattaformeSocial;
-import it.unicam.cs.ids.model.POI.contenuto.Contenuto;
+import it.unicam.cs.ids.model.POI.Contenuto;
 import it.unicam.cs.ids.services.ContenutoService;
 import it.unicam.cs.ids.services.SocialService;
 import jakarta.validation.Valid;
