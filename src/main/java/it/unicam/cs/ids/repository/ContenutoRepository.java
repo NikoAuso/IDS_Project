@@ -1,7 +1,7 @@
 package it.unicam.cs.ids.repository;
 
 import it.unicam.cs.ids.model.POI.POI;
-import it.unicam.cs.ids.model.POI.contenuto.Contenuto;
+import it.unicam.cs.ids.model.POI.Contenuto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

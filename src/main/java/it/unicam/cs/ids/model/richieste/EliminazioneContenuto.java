@@ -2,7 +2,7 @@ package it.unicam.cs.ids.model.richieste;
 
 import it.unicam.cs.ids.enumeration.StatusRichieste;
 import it.unicam.cs.ids.enumeration.TipoRichiesta;
-import it.unicam.cs.ids.model.POI.contenuto.Contenuto;
+import it.unicam.cs.ids.model.POI.Contenuto;
 import it.unicam.cs.ids.model.Users;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

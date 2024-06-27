@@ -4,7 +4,7 @@ import it.unicam.cs.ids.dto.ContenutoDto;
 import it.unicam.cs.ids.enumeration.TipoCategoriaContenuto;
 import it.unicam.cs.ids.enumeration.TipoContenuto;
 import it.unicam.cs.ids.model.POI.POI;
-import it.unicam.cs.ids.model.POI.contenuto.Contenuto;
+import it.unicam.cs.ids.model.POI.Contenuto;
 import it.unicam.cs.ids.model.Users;
 import it.unicam.cs.ids.observer.ObserverImpl;
 import it.unicam.cs.ids.observer.Publisher;

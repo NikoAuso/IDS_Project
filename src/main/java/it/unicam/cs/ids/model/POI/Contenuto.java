@@ -1,9 +1,8 @@
-package it.unicam.cs.ids.model.POI.contenuto;
+package it.unicam.cs.ids.model.POI;
 
 import com.fasterxml.jackson.annotation.*;
 import it.unicam.cs.ids.enumeration.TipoCategoriaContenuto;
 import it.unicam.cs.ids.enumeration.TipoContenuto;
-import it.unicam.cs.ids.model.POI.POI;
 import it.unicam.cs.ids.model.Users;
 import it.unicam.cs.ids.model.richieste.Segnalazione;
 import jakarta.persistence.*;
