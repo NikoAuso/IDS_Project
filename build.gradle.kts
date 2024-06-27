@@ -33,10 +33,10 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.3")
 
     // DATABASE POSTGRESQL
-    // runtimeOnly("org.postgresql:postgresql")
+    runtimeOnly("org.postgresql:postgresql")
 
     // DATABASE H2
-    runtimeOnly("com.h2database:h2")
+    // runtimeOnly("com.h2database:h2")
 
     // LOMBOK
     compileOnly("org.projectlombok:lombok")
